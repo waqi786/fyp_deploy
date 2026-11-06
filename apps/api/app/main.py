@@ -6,11 +6,16 @@ from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
 
+from app.api.deps import AuthContext, get_auth_context
 from app.api.v1.router import api_router
 from app.core.config import settings
-from app.api.deps import AuthContext, get_auth_context
-from app.services.search.translation import start_translation_retry_worker, translation_budget_status, translation_metrics, translation_provider_health
 from app.services.ai_router import get_default_router
+from app.services.search.translation import (
+    start_translation_retry_worker,
+    translation_budget_status,
+    translation_metrics,
+    translation_provider_health,
+)
 
 
 @asynccontextmanager

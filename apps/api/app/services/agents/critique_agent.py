@@ -1,4 +1,8 @@
-from app.schemas.agents import CritiqueAgentOutput, MultiAgentWorkflowRequest, SearchAgentOutput
+from app.schemas.agents import (
+    CritiqueAgentOutput,
+    MultiAgentWorkflowRequest,
+    SearchAgentOutput,
+)
 from app.schemas.trust import TrustAnalysisRequest
 from app.services.agents.templates import AGENT_PROMPT_TEMPLATES
 from app.services.critique.trust import TrustAnalysisService

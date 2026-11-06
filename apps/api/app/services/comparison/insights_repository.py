@@ -8,7 +8,6 @@ from uuid import uuid4
 
 from app.services.comparison.uploads.repository import ComparisonPdfRepository
 
-
 INSIGHTS_VERSION = 3
 
 

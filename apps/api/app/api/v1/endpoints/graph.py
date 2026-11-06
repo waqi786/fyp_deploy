@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from app.schemas.graph import CitationGraphRequest, CitationGraphResponse
 from app.services.graph.metrics import CitationGraphService
 
-
 router = APIRouter()
 service = CitationGraphService()
 

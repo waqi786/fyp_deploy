@@ -18,9 +18,14 @@ from fastapi.responses import StreamingResponse
 
 from app.api.deps import AuthContext, get_auth_context
 from app.core.config import settings
-from app.schemas.paper import PaperRecord, PaperSearchResponse
 from app.schemas.entities import EntityMatches, InstitutionProfile, ResearcherProfile
-from app.schemas.research import AskRequest, CreditEstimate, ResearchAnswer, ResearchRequest
+from app.schemas.paper import PaperRecord, PaperSearchResponse
+from app.schemas.research import (
+    AskRequest,
+    CreditEstimate,
+    ResearchAnswer,
+    ResearchRequest,
+)
 from app.schemas.search import (
     SavedSearchRecord,
     SavedSearchRequest,
@@ -35,10 +40,24 @@ from app.schemas.search import (
 )
 from app.services.credits.service import CreditLimitReached, get_credit_service
 from app.services.notifications.delivery import AlertDeliveryService
-from app.services.search.entities import EntityNotFound, EntityUnavailable, get_entity_service
-from app.services.search.research import ResearchService, ResearchUnavailable, detect_identifier, paper_matches_identifier
+from app.services.search.entities import (
+    EntityNotFound,
+    EntityUnavailable,
+    get_entity_service,
+)
+from app.services.search.research import (
+    ResearchService,
+    ResearchUnavailable,
+    detect_identifier,
+    paper_matches_identifier,
+)
 from app.services.search.service import FederatedSearchService
-from app.services.search.translation import TranslationUnavailable, get_translation_retry_status, translate_batch, translation_metrics
+from app.services.search.translation import (
+    TranslationUnavailable,
+    get_translation_retry_status,
+    translate_batch,
+    translation_metrics,
+)
 from app.services.search.ui_copy import UnsupportedLanguage, get_ui_copy_service
 from app.services.search.workspace import SearchWorkspaceService
 

@@ -6,7 +6,6 @@ from urllib.parse import urlparse
 
 import httpx
 
-
 _RATE_LOCKS: dict[str, asyncio.Lock] = {}
 _LAST_REQUEST: dict[str, float] = {}
 

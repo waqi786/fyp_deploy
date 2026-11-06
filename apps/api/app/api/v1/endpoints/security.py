@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from app.schemas.security import SecurityComplianceRequest, SecurityComplianceResponse
 from app.services.security.compliance import SecurityComplianceService
 
-
 router = APIRouter()
 service = SecurityComplianceService()
 

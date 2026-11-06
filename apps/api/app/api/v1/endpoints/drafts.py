@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from app.schemas.draft import DraftGenerationRequest, DraftGenerationResponse
 from app.services.writing.draft_generation import DraftGenerationService
 
-
 router = APIRouter()
 service = DraftGenerationService()
 

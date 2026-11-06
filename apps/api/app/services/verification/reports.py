@@ -2,6 +2,7 @@
 import re
 from pathlib import Path
 
+from app.schemas.analytics import AnalyticsRequest
 from app.schemas.chat import ChatDocument
 from app.schemas.collaboration import CollaborationRequest, CommentThread, WorkspaceTask
 from app.schemas.comparison import ComparisonRequest
@@ -11,10 +12,9 @@ from app.schemas.export import CitationExportRequest
 from app.schemas.gap import GapReportRequest
 from app.schemas.library import CitationLibraryRequest
 from app.schemas.paper import PaperRecord
-from app.schemas.analytics import AnalyticsRequest
 from app.schemas.personalization import PersonalizationRequest
-from app.schemas.trust import TrustAnalysisRequest
 from app.schemas.quality import TraceabilityCheckRequest
+from app.schemas.trust import TrustAnalysisRequest
 from app.schemas.verification import (
     CommittedScopeItem,
     CommittedScopeResponse,
@@ -41,8 +41,8 @@ from app.services.gap.detector import GapDetectionService
 from app.services.library.manager import CitationLibraryService
 from app.services.quality.traceability import TraceabilityGuardService
 from app.services.retrieval.chat_engine import GroundedChatEngine
-from app.services.writing.literature_review import LiteratureReviewService
 from app.services.workspace.collaboration import CollaborationService
+from app.services.writing.literature_review import LiteratureReviewService
 
 
 class VerificationReportService:

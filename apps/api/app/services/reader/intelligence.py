@@ -20,7 +20,13 @@ import re
 from collections import Counter
 from typing import Any, Callable
 
-from app.schemas.reader import ReaderAnswer, ReaderCitation, ReaderSummary, SummaryPoint, TranslatedPage
+from app.schemas.reader import (
+    ReaderAnswer,
+    ReaderCitation,
+    ReaderSummary,
+    SummaryPoint,
+    TranslatedPage,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -446,7 +452,9 @@ def split_paragraphs(text: str, limit: int = 1400) -> list[str]:
 
 def translate_pages(pages: list[str], numbers: list[int], *, language: str, private: bool, translate: Callable[..., list[str]] | None = None) -> list[TranslatedPage]:
     if translate is None:
-        from app.services.search.translation import translate_batch as translate  # type: ignore[no-redef]
+        from app.services.search.translation import (
+            translate_batch as translate,  # type: ignore[no-redef]
+        )
     results: list[TranslatedPage] = []
     for number in numbers:
         original = split_paragraphs(pages[number - 1]) if 1 <= number <= len(pages) else []

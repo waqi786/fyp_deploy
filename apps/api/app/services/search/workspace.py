@@ -8,9 +8,9 @@ from uuid import uuid4
 
 from app.schemas.paper import PaperRecord
 from app.schemas.search import (
-    SearchAlertPreview,
     SavedSearchRecord,
     SavedSearchRequest,
+    SearchAlertPreview,
     SearchAlertRunResponse,
     SearchExportResponse,
     SearchFilters,

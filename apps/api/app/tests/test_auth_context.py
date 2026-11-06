@@ -3,8 +3,8 @@ import hashlib
 import hmac
 import json
 
-from app.core.config import settings
 from app.api.deps import get_auth_context
+from app.core.config import settings
 
 
 def _unsigned_jwt(payload: dict) -> str:

@@ -1,6 +1,5 @@
 import hashlib
 
-
 BOUNDARIES = ["\n\n", "\n", " ", ""]
 
 

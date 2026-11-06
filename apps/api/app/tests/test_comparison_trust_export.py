@@ -1,4 +1,8 @@
 import asyncio
+
+from pydantic import ValidationError
+
+from app.api.v1.endpoints import comparison as comparison_endpoint
 from app.schemas.comparison import ComparisonRequest
 from app.schemas.export import CitationExportRequest
 from app.schemas.paper import PaperRecord
@@ -8,8 +12,6 @@ from app.services.comparison.engine import ComparisonEngine
 from app.services.critique.trust import TrustAnalysisService
 from app.services.exports.citations import CitationExportService
 from app.services.workspace.rbac import WorkspaceService
-from app.api.v1.endpoints import comparison as comparison_endpoint
-from pydantic import ValidationError
 
 
 def make_paper(**overrides) -> PaperRecord:

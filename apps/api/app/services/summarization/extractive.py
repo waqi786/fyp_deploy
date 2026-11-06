@@ -2,13 +2,20 @@ import re
 from collections import Counter
 from datetime import UTC, datetime
 
-from app.schemas.summary import GlossaryEntry, GlossaryHoverSpan, OutlineSectionDetail, SummaryResponse, SummaryTier
+from app.schemas.summary import (
+    GlossaryEntry,
+    GlossaryHoverSpan,
+    OutlineSectionDetail,
+    SummaryResponse,
+    SummaryTier,
+)
+from app.services.models.providers import get_default_model_provider
 from app.services.summarization.academic import (
     acronym_expansions,
     auto_outline,
-    explain_paragraph,
     estimate_reading_time,
     exam_qa,
+    explain_paragraph,
     extract_contributions_and_limitations,
     extract_datasets,
     extract_glossary,
@@ -26,8 +33,6 @@ from app.services.summarization.academic import (
     study_limitation_severity,
     translate_summary_payload,
 )
-from app.services.models.providers import get_default_model_provider
-
 
 STOPWORDS = {
     "the", "a", "an", "and", "or", "of", "to", "in", "on", "for", "with", "is", "are", "was", "were",

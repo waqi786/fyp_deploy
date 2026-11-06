@@ -1,4 +1,8 @@
-from app.schemas.agents import CitationAgentOutput, MultiAgentWorkflowRequest, SearchAgentOutput
+from app.schemas.agents import (
+    CitationAgentOutput,
+    MultiAgentWorkflowRequest,
+    SearchAgentOutput,
+)
 from app.schemas.export import CitationExportRequest
 from app.schemas.graph import CitationEdge, CitationGraphRequest, CitationNode
 from app.services.agents.templates import AGENT_PROMPT_TEMPLATES

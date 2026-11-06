@@ -6,7 +6,12 @@ import pytest
 @pytest.fixture(autouse=True)
 def deterministic_unconfigured_llm(monkeypatch):
     monkeypatch.setenv("RESORA_TESTING", "1")
-    from app.services.models.adapters import AIRouterAdapter, ExtractiveAdapter, GroqAdapter, LLMOutput
+    from app.services.models.adapters import (
+        AIRouterAdapter,
+        ExtractiveAdapter,
+        GroqAdapter,
+        LLMOutput,
+    )
 
     def fake_complete(self, prompt: str) -> LLMOutput:
         clean = " ".join(prompt.split())

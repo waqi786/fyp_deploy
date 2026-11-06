@@ -1,5 +1,9 @@
 from app.schemas.paper import PaperRecord
-from app.services.search.deduplication import deduplicate_papers, normalize_title, score_paper_richness
+from app.services.search.deduplication import (
+    deduplicate_papers,
+    normalize_title,
+    score_paper_richness,
+)
 
 
 def make_paper(**overrides) -> PaperRecord:

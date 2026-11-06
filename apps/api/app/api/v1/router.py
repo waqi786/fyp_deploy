@@ -1,8 +1,36 @@
 from fastapi import APIRouter
 
 from app.api.v1.endpoints import advanced_ai as _advanced_ai
-from app.api.v1.endpoints import agents, analytics, chat, collaboration, comparison, developer, documents, drafts, evaluation, exports, gap, graph, health, library, mobile, personalization, quality, reader, roadmap, search, security, summaries, trust, verification, workspaces, write, writing, ws
-
+from app.api.v1.endpoints import (
+    agents,
+    analytics,
+    chat,
+    collaboration,
+    comparison,
+    developer,
+    documents,
+    drafts,
+    evaluation,
+    exports,
+    gap,
+    graph,
+    health,
+    library,
+    mobile,
+    personalization,
+    quality,
+    reader,
+    roadmap,
+    search,
+    security,
+    summaries,
+    trust,
+    verification,
+    workspaces,
+    write,
+    writing,
+    ws,
+)
 
 api_router = APIRouter()
 api_router.include_router(health.router, prefix="/health", tags=["health"])

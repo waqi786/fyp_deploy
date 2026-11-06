@@ -9,7 +9,13 @@ from typing import Any
 from uuid import uuid4
 
 from app.core.config import settings
-from app.services.library.store import LibraryNotFound, LibraryStore, _Session, now, paper_key
+from app.services.library.store import (
+    LibraryNotFound,
+    LibraryStore,
+    _Session,
+    now,
+    paper_key,
+)
 
 _SCHEMA = [
     """create table if not exists write_documents (

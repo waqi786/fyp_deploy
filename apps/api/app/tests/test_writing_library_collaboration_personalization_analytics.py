@@ -1,10 +1,14 @@
-from pathlib import Path
 import zipfile
+from pathlib import Path
 
 from app.schemas.analytics import AnalyticsRequest
 from app.schemas.collaboration import CollaborationRequest, CommentThread, WorkspaceTask
 from app.schemas.document import ExtractedFigure, ExtractedTable
-from app.schemas.library import CitationImportRequest, CitationLibraryRequest, CitationPreviewRequest
+from app.schemas.library import (
+    CitationImportRequest,
+    CitationLibraryRequest,
+    CitationPreviewRequest,
+)
 from app.schemas.paper import PaperRecord
 from app.schemas.personalization import PersonalizationRequest
 from app.schemas.writing import LiteratureReviewRequest

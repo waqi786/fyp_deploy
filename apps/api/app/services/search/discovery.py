@@ -4,7 +4,6 @@ from collections import Counter, defaultdict
 from app.schemas.paper import PaperRecord
 from app.services.retrieval.vector_store import FaissLiteStore
 
-
 TRANSLATIONS = {
     "ur": {
         "مشین لرننگ": "machine learning",

@@ -3,11 +3,17 @@ from collections.abc import AsyncIterator
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 
-from app.schemas.chat import ChatFeedbackRequest, ChatFeedbackResponse, ChatMessageRequest, ChatMessageResponse, ChatPinRequest, ChatPinResponse
+from app.schemas.chat import (
+    ChatFeedbackRequest,
+    ChatFeedbackResponse,
+    ChatMessageRequest,
+    ChatMessageResponse,
+    ChatPinRequest,
+    ChatPinResponse,
+)
 from app.services.agents.orchestrator import AgentOrchestrator
 from app.services.retrieval.chat_engine import GroundedChatEngine
 from app.services.retrieval.chat_interactions import ChatInteractionStore
-
 
 router = APIRouter()
 orchestrator = AgentOrchestrator()

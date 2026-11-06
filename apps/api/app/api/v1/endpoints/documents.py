@@ -15,7 +15,6 @@ from app.services.documents.image_analysis import FigureImageAnalysisService
 from app.services.documents.multimodal_workbench import MultimodalWorkbenchService
 from app.services.documents.pdf_extraction import DocumentExtractionService
 
-
 router = APIRouter()
 service = DocumentExtractionService()
 image_service = FigureImageAnalysisService()

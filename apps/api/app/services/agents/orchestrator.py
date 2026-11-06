@@ -1,6 +1,10 @@
 from dataclasses import dataclass
 
-from app.schemas.agents import AgentStateTransition, MultiAgentWorkflowRequest, MultiAgentWorkflowResponse
+from app.schemas.agents import (
+    AgentStateTransition,
+    MultiAgentWorkflowRequest,
+    MultiAgentWorkflowResponse,
+)
 from app.services.agents.citation_agent import CitationAgent
 from app.services.agents.comparison_agent import ComparisonAgent
 from app.services.agents.critique_agent import CritiqueTrustAgent

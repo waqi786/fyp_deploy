@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from app.schemas.roadmap import RoadmapResponse
 from app.services.roadmap.planner import DevelopmentRoadmapService
 
-
 router = APIRouter()
 service = DevelopmentRoadmapService()
 

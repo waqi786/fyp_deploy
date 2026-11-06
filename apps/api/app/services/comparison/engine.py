@@ -1,14 +1,21 @@
+import json
 import re
 from collections import Counter
-import json
 from datetime import UTC, datetime
 from urllib.parse import urlsplit
 from uuid import uuid4
 
-from app.schemas.comparison import ComparisonRequest, ComparisonResponse, ComparisonRow, InsightEvidenceRef, InsightKeyNumber, InsightsModel, PaperProfile
+from app.schemas.comparison import (
+    ComparisonRequest,
+    ComparisonResponse,
+    ComparisonRow,
+    InsightEvidenceRef,
+    InsightKeyNumber,
+    InsightsModel,
+    PaperProfile,
+)
 from app.schemas.paper import PaperRecord
 from app.services.comparison.profiles import build_paper_profile
-
 
 TOKEN_PATTERN = re.compile(r"\b[a-zA-Z][a-zA-Z-]+\b")
 STOPWORDS = {"the", "and", "for", "with", "this", "that", "from", "into", "using", "study", "paper"}

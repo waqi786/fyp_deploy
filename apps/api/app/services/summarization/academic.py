@@ -1,7 +1,6 @@
 import math
 import re
 
-
 STOPWORDS = {
     "the", "and", "for", "with", "this", "that", "from", "into", "using", "study", "paper", "results",
 }

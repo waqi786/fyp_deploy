@@ -1,9 +1,9 @@
 from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator
-from app.services.language.config import canonical_language_code
 
 from app.schemas.paper import PaperRecord
+from app.services.language.config import canonical_language_code
 from app.services.search.source_ids import DEFAULT_SCHOLARLY_SOURCES
 
 

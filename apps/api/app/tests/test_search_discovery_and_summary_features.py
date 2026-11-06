@@ -1,5 +1,7 @@
 from app.schemas.paper import PaperRecord
 from app.services.search.discovery import (
+    _extract_datasets,
+    _extract_methodologies,
     apply_filters,
     build_discovery_facets,
     enrich_search_results,
@@ -7,8 +9,6 @@ from app.services.search.discovery import (
     interpret_search_query,
     normalize_natural_language_query,
     semantic_vector_scores,
-    _extract_datasets,
-    _extract_methodologies,
 )
 from app.services.summarization.extractive import ExtractiveSummarizer
 

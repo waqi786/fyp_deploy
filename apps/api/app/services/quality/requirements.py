@@ -1,4 +1,8 @@
-from app.schemas.quality import NonFunctionalQualityRequest, NonFunctionalQualityResponse, QualityMetric
+from app.schemas.quality import (
+    NonFunctionalQualityRequest,
+    NonFunctionalQualityResponse,
+    QualityMetric,
+)
 from app.services.evaluation.benchmark import BaselineEvaluator
 from app.services.quality.traceability import TraceabilityGuardService
 

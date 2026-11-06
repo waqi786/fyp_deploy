@@ -8,7 +8,6 @@ from app.services.retrieval.chunking import make_chunk_id, split_text
 from app.services.retrieval.config import DEFAULT_RETRIEVAL_CONFIG
 from app.services.retrieval.vector_store import FaissLiteStore
 
-
 TOKEN_PATTERN = re.compile(r"\b[\w-]+\b", re.UNICODE)
 
 

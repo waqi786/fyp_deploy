@@ -1,4 +1,8 @@
-from app.schemas.agents import MultiAgentWorkflowRequest, ReadingAgentOutput, WritingAgentOutput
+from app.schemas.agents import (
+    MultiAgentWorkflowRequest,
+    ReadingAgentOutput,
+    WritingAgentOutput,
+)
 from app.schemas.writing import LiteratureReviewRequest
 from app.services.agents.templates import AGENT_PROMPT_TEMPLATES
 from app.services.writing.draft_generation import DraftGenerationService

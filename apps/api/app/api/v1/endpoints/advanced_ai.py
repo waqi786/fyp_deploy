@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from app.schemas.advanced import AdvancedAIRequest, AdvancedAIResponse
 from app.services.advanced.intelligence import AdvancedIntelligenceService
 
-
 router = APIRouter()
 service = AdvancedIntelligenceService()
 

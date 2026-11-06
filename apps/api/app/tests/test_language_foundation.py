@@ -1,15 +1,23 @@
 from __future__ import annotations
 
-import os
 import json
+import os
 from unittest.mock import patch
 
 import pytest
 
 from app.schemas.search import SearchRequest
-from app.services.language.config import canonical_language_code, detect_language, language_profile
+from app.services.language.config import (
+    canonical_language_code,
+    detect_language,
+    language_profile,
+)
 from app.services.search import translation
-from app.services.search.translation import TranslationUnavailable, clear_translation_cache, translate_text
+from app.services.search.translation import (
+    TranslationUnavailable,
+    clear_translation_cache,
+    translate_text,
+)
 
 
 def test_supported_language_aliases_and_rtl_profiles():
@@ -305,8 +313,8 @@ def test_429_cooldown_is_recorded_and_fallback_is_immediate():
 
 
 def test_two_hundred_concurrent_identical_requests_coalesce_to_one_call():
-    from concurrent.futures import ThreadPoolExecutor
     import time
+    from concurrent.futures import ThreadPoolExecutor
 
     clear_translation_cache()
     class SlowProvider(StaticProvider):

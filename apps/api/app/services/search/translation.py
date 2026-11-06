@@ -9,8 +9,8 @@ import sqlite3
 import threading
 import time
 import uuid
-from concurrent.futures import ThreadPoolExecutor
 from collections import OrderedDict, deque
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Protocol, Sequence
@@ -18,7 +18,11 @@ from typing import Protocol, Sequence
 import httpx
 
 from app.core.config import settings
-from app.services.language.config import canonical_language_code, detect_language, language_profile
+from app.services.language.config import (
+    canonical_language_code,
+    detect_language,
+    language_profile,
+)
 
 logger = logging.getLogger(__name__)
 

@@ -4,7 +4,6 @@ from pydantic import BaseModel, Field
 
 from app.schemas.paper import PaperRecord
 
-
 # --------------------------------------------------------------------------- legacy citation library (Write tab)
 
 

@@ -12,7 +12,6 @@ from app.services.notifications.delivery import AlertDeliveryService
 from app.services.search.workspace import SearchWorkspaceService
 from app.services.storage.background_cache import BackgroundPaperCache
 
-
 logger = logging.getLogger("resora.worker")
 
 

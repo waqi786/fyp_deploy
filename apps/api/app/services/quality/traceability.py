@@ -1,6 +1,10 @@
 import re
 
-from app.schemas.quality import TraceabilityCheckRequest, TraceabilityCheckResponse, TraceableSentence
+from app.schemas.quality import (
+    TraceabilityCheckRequest,
+    TraceabilityCheckResponse,
+    TraceableSentence,
+)
 
 
 class TraceabilityGuardService:

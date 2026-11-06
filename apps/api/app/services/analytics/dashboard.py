@@ -1,7 +1,7 @@
 from collections import Counter, defaultdict
 
-from app.schemas.graph import CitationEdge, CitationGraphRequest, CitationNode
 from app.schemas.analytics import AnalyticsRequest, AnalyticsResponse
+from app.schemas.graph import CitationEdge, CitationGraphRequest, CitationNode
 from app.services.graph.metrics import CitationGraphService
 
 

@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from app.schemas.personalization import PersonalizationRequest, PersonalizationResponse
 from app.services.personalization.profile import PersonalizationService
 
-
 router = APIRouter()
 service = PersonalizationService()
 

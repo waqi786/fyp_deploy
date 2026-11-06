@@ -1,8 +1,13 @@
 from fastapi import APIRouter
 
-from app.schemas.verification import CommittedScopeResponse, CompleteFeatureChecklistResponse, FeatureVerificationResponse, ProposalAlignmentResponse, VerificationReportResponse
+from app.schemas.verification import (
+    CommittedScopeResponse,
+    CompleteFeatureChecklistResponse,
+    FeatureVerificationResponse,
+    ProposalAlignmentResponse,
+    VerificationReportResponse,
+)
 from app.services.verification.reports import VerificationReportService
-
 
 router = APIRouter()
 service = VerificationReportService()

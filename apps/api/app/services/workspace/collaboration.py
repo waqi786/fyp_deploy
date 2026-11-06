@@ -1,9 +1,9 @@
-from datetime import UTC, datetime
 import json
 import os
+import zipfile
+from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
-import zipfile
 
 from app.schemas.collaboration import (
     AIContentAuditEntry,

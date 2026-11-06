@@ -1,11 +1,19 @@
 from __future__ import annotations
 
-
 import httpx
 import pytest
 
-from app.services.ai_router.providers import AIResponse, OpenRouterProvider, ProviderFailure
-from app.services.ai_router.router import AIRouter, Route, RouterCache, RouterUnavailable
+from app.services.ai_router.providers import (
+    AIResponse,
+    OpenRouterProvider,
+    ProviderFailure,
+)
+from app.services.ai_router.router import (
+    AIRouter,
+    Route,
+    RouterCache,
+    RouterUnavailable,
+)
 
 
 class FakeProvider:

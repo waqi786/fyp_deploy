@@ -13,7 +13,6 @@ from app.services.models.providers import get_default_model_provider
 from app.services.writing.artifact_packager import WritingArtifactPackager
 from app.services.writing.self_critique import SelfCritiqueService
 
-
 URDU_HEADING_LABELS = {
     "abstract": "خلاصہ",
     "introduction": "تعارف",

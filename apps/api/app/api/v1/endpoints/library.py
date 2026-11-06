@@ -46,10 +46,14 @@ from app.schemas.library import (
     LibraryTaskUpdate,
 )
 from app.services.library import ask as library_ask
-from app.services.library import citations
-from app.services.library import resolve
+from app.services.library import citations, resolve
 from app.services.library.manager import CitationLibraryService
-from app.services.library.store import LibraryLimit, LibraryNotFound, LibraryStore, paper_key
+from app.services.library.store import (
+    LibraryLimit,
+    LibraryNotFound,
+    LibraryStore,
+    paper_key,
+)
 
 router = APIRouter()
 service = CitationLibraryService()

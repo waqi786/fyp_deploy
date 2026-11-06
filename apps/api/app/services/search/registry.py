@@ -1,5 +1,12 @@
 from app.services.search.arxiv_service import ArxivProvider
-from app.services.search.catalog_sources import DblpProvider, DoajProvider, EuropePMCProvider, HalProvider, PreprintProvider, ZenodoProvider
+from app.services.search.catalog_sources import (
+    DblpProvider,
+    DoajProvider,
+    EuropePMCProvider,
+    HalProvider,
+    PreprintProvider,
+    ZenodoProvider,
+)
 from app.services.search.core_service import CoreProvider
 from app.services.search.crossref_service import CrossrefProvider
 from app.services.search.openalex_service import OpenAlexProvider

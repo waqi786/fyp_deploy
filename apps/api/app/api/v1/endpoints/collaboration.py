@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from app.schemas.collaboration import CollaborationRequest, CollaborationResponse
 from app.services.workspace.collaboration import CollaborationService
 
-
 router = APIRouter()
 service = CollaborationService()
 

@@ -4,7 +4,11 @@ from pathlib import Path
 
 from app.cli import main as cli_main
 from app.schemas.advanced import AdvancedAIRequest
-from app.schemas.developer import BrowserExtensionIntakeRequest, DeveloperPlatformRequest, GraphQLQueryRequest
+from app.schemas.developer import (
+    BrowserExtensionIntakeRequest,
+    DeveloperPlatformRequest,
+    GraphQLQueryRequest,
+)
 from app.schemas.paper import PaperRecord
 from app.services.advanced.intelligence import AdvancedIntelligenceService
 from app.services.developer.platform import DeveloperPlatformService

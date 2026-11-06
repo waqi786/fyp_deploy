@@ -1,4 +1,8 @@
-from app.schemas.agents import ComparisonAgentOutput, MultiAgentWorkflowRequest, SearchAgentOutput
+from app.schemas.agents import (
+    ComparisonAgentOutput,
+    MultiAgentWorkflowRequest,
+    SearchAgentOutput,
+)
 from app.schemas.comparison import ComparisonRequest
 from app.services.agents.templates import AGENT_PROMPT_TEMPLATES
 from app.services.comparison.engine import ComparisonEngine

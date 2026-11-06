@@ -1,8 +1,11 @@
 from fastapi import APIRouter
 
-from app.schemas.workspace import WorkspaceCreateRequest, WorkspaceDetail, WorkspaceSummary
+from app.schemas.workspace import (
+    WorkspaceCreateRequest,
+    WorkspaceDetail,
+    WorkspaceSummary,
+)
 from app.services.workspace.rbac import WorkspaceService
-
 
 router = APIRouter()
 service = WorkspaceService()

@@ -24,7 +24,12 @@ from math import ceil
 from typing import Any, Callable
 from urllib.parse import urlencode
 
-from app.schemas.paper import PaperSearchResponse, RankingExplanation, SearchCacheStatus, SearchPagination
+from app.schemas.paper import (
+    PaperSearchResponse,
+    RankingExplanation,
+    SearchCacheStatus,
+    SearchPagination,
+)
 from app.schemas.search import SearchFilters, SourceSearchRequest
 from app.services.language.config import canonical_language_code, detect_language
 from app.services.plugins.registry import PluginRegistryService
@@ -41,7 +46,12 @@ from app.services.search.discovery import (
 )
 from app.services.search.query_parser import understand_research_query
 from app.services.search.source_ids import DEFAULT_SCHOLARLY_SOURCES
-from app.services.search.translation import TranslationUnavailable, schedule_translation_retry, translate_batch, translate_text
+from app.services.search.translation import (
+    TranslationUnavailable,
+    schedule_translation_retry,
+    translate_batch,
+    translate_text,
+)
 from app.services.search.web_search import WebSearchService
 from app.services.search.workspace import SearchWorkspaceService
 from app.services.storage.background_cache import BackgroundPaperCache

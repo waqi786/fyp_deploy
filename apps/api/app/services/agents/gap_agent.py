@@ -1,4 +1,8 @@
-from app.schemas.agents import GapAgentOutput, MultiAgentWorkflowRequest, SearchAgentOutput
+from app.schemas.agents import (
+    GapAgentOutput,
+    MultiAgentWorkflowRequest,
+    SearchAgentOutput,
+)
 from app.schemas.gap import GapReportRequest
 from app.services.agents.templates import AGENT_PROMPT_TEMPLATES
 from app.services.gap.detector import GapDetectionService

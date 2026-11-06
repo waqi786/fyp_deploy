@@ -9,8 +9,12 @@ from urllib.parse import urljoin, urlparse
 
 import httpx
 
-from app.schemas.document import DocumentExtractionResponse, EquationExplanation, ExtractedFigure, ExtractedTable
-
+from app.schemas.document import (
+    DocumentExtractionResponse,
+    EquationExplanation,
+    ExtractedFigure,
+    ExtractedTable,
+)
 
 BLOCKED_DOMAINS = {"researchgate.net", "www.researchgate.net", "academia.edu", "www.academia.edu"}
 CAPTCHA_HINTS = ("captcha", "challenge", "login", "signin", "authwall")

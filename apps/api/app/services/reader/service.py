@@ -6,7 +6,13 @@ import asyncio
 import os
 from typing import Any
 
-from app.schemas.reader import ReaderAnswer, ReaderDocument, ReaderPaperRef, ReaderSummary, TranslateResponse
+from app.schemas.reader import (
+    ReaderAnswer,
+    ReaderDocument,
+    ReaderPaperRef,
+    ReaderSummary,
+    TranslateResponse,
+)
 from app.services.language.config import canonical_language_code
 from app.services.reader import fetch, intelligence
 from app.services.reader.pdf_text import PdfUnreadable, extract_pdf_text

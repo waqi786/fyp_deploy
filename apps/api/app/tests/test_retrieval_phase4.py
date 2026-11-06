@@ -1,4 +1,7 @@
-from app.services.retrieval.benchmark import RetrievalBenchmarkCase, RetrievalBenchmarkService
+from app.services.retrieval.benchmark import (
+    RetrievalBenchmarkCase,
+    RetrievalBenchmarkService,
+)
 from app.services.retrieval.hybrid import HybridRetriever
 
 

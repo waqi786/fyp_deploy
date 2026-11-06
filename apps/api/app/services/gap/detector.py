@@ -1,7 +1,7 @@
+import json
 import re
 from collections import Counter, defaultdict
 from datetime import UTC, datetime
-import json
 
 from app.schemas.gap import (
     ContradictionEvidenceEntry,

@@ -1,17 +1,26 @@
 import asyncio
+import hashlib
 import html
-import os
 import ipaddress
+import os
 import re
 import socket
-import hashlib
 from collections import OrderedDict
 from difflib import SequenceMatcher
 from urllib.parse import quote, urljoin, urlsplit
 from uuid import UUID, uuid4
 
 import httpx
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, UploadFile
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    Form,
+    HTTPException,
+    Query,
+    Request,
+    UploadFile,
+)
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
 
@@ -20,11 +29,10 @@ from app.core.config import settings
 from app.schemas.comparison import ComparisonRequest, ComparisonResponse, PaperProfile
 from app.schemas.paper import PaperRecord
 from app.services.comparison.engine import ComparisonEngine
-from app.services.documents.pdf_extraction import DocumentExtractionService
-from app.services.comparison.uploads.repository import ComparisonPdfRepository
 from app.services.comparison.insights_repository import ComparisonInsightsRepository
 from app.services.comparison.saved_repository import ComparisonSavedRepository
-
+from app.services.comparison.uploads.repository import ComparisonPdfRepository
+from app.services.documents.pdf_extraction import DocumentExtractionService
 
 router = APIRouter()
 engine = ComparisonEngine()
@@ -381,7 +389,12 @@ async def _open_pdf_for(paper: _AddPaper) -> tuple[bytes | None, str]:
 
     Returns (pdf bytes or None, reason). Every download is SSRF-checked, size-capped and must be a real PDF.
     """
-    from app.services.reader.fetch import FetchFailed, arxiv_id, download_pdf, normalize_doi
+    from app.services.reader.fetch import (
+        FetchFailed,
+        arxiv_id,
+        download_pdf,
+        normalize_doi,
+    )
 
     record = PaperRecord(paper_id=paper.paper_id or paper.key, title=paper.title, doi=normalize_doi(paper.doi), url=paper.url, pdf_url=paper.pdf_url, source="search")
     candidates: list[str] = [url for url in (paper.pdf_url,) if url and url.startswith("https://")]

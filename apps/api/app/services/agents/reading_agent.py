@@ -1,4 +1,8 @@
-from app.schemas.agents import MultiAgentWorkflowRequest, ReadingAgentOutput, SearchAgentOutput
+from app.schemas.agents import (
+    MultiAgentWorkflowRequest,
+    ReadingAgentOutput,
+    SearchAgentOutput,
+)
 from app.schemas.document import DocumentExtractionResponse
 from app.services.agents.templates import AGENT_PROMPT_TEMPLATES
 from app.services.documents.pdf_extraction import DocumentExtractionService

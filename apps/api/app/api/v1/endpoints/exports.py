@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from app.schemas.export import CitationExportRequest, CitationExportResponse
 from app.services.exports.citations import CitationExportService
 
-
 router = APIRouter()
 service = CitationExportService()
 

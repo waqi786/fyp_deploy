@@ -1,6 +1,11 @@
 from uuid import uuid4
 
-from app.schemas.workspace import WorkspaceCreateRequest, WorkspaceDetail, WorkspaceMember, WorkspaceSummary
+from app.schemas.workspace import (
+    WorkspaceCreateRequest,
+    WorkspaceDetail,
+    WorkspaceMember,
+    WorkspaceSummary,
+)
 
 
 class WorkspaceService:

@@ -1,7 +1,6 @@
-from dataclasses import dataclass
 import math
 import re
-
+from dataclasses import dataclass
 
 TOKEN_PATTERN = re.compile(r"\b[\w-]+\b", re.UNICODE)
 SEMANTIC_ALIASES = {

@@ -1,7 +1,10 @@
 from app.schemas.chat import ChatCitationEdge, ChatDocument, ChatFigure, ChatTable
 from app.schemas.evaluation import EvaluationCase, EvaluationRequest
 from app.services.evaluation.benchmark import BaselineEvaluator
-from app.services.retrieval.chat_benchmark import ChatBenchmarkCase, ChatBenchmarkService
+from app.services.retrieval.chat_benchmark import (
+    ChatBenchmarkCase,
+    ChatBenchmarkService,
+)
 from app.services.retrieval.chat_engine import GroundedChatEngine
 
 

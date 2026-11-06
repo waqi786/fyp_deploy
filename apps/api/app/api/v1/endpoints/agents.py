@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from app.schemas.agents import MultiAgentWorkflowRequest, MultiAgentWorkflowResponse
 from app.services.agents.orchestrator import AgentOrchestrator
 
-
 router = APIRouter()
 service = AgentOrchestrator()
 

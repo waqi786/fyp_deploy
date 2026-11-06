@@ -7,7 +7,6 @@ from app.schemas.search import SearchFilters, SourceSearchRequest
 from app.services.search.crossref_service import CrossrefProvider
 from app.services.search.openalex_service import OpenAlexProvider
 
-
 pytestmark = pytest.mark.integration
 
 

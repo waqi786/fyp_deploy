@@ -10,7 +10,6 @@ from app.schemas.developer import (
 )
 from app.services.developer.platform import DeveloperPlatformService
 
-
 router = APIRouter()
 service = DeveloperPlatformService()
 

@@ -11,7 +11,6 @@ from app.services.quality.launch_readiness import LaunchReadinessService
 from app.services.quality.requirements import NonFunctionalQualityService
 from app.services.quality.traceability import TraceabilityGuardService
 
-
 router = APIRouter()
 quality_service = NonFunctionalQualityService()
 traceability_service = TraceabilityGuardService()

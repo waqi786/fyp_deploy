@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from app.schemas.writing import LiteratureReviewRequest, LiteratureReviewResponse
 from app.services.writing.literature_review import LiteratureReviewService
 
-
 router = APIRouter()
 service = LiteratureReviewService()
 

@@ -18,7 +18,12 @@ from collections import OrderedDict
 from typing import Any, Literal
 
 from app.schemas.paper import PaperRecord
-from app.schemas.research import ResearchAnswer, ResearchApproach, ResearchFinding, ResearchGap
+from app.schemas.research import (
+    ResearchAnswer,
+    ResearchApproach,
+    ResearchFinding,
+    ResearchGap,
+)
 from app.services.language.config import canonical_language_code, language_profile
 
 logger = logging.getLogger(__name__)

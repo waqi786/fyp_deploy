@@ -1,6 +1,6 @@
+import os
 from collections import Counter
 from datetime import UTC, datetime
-import os
 from pathlib import Path
 from uuid import uuid4
 

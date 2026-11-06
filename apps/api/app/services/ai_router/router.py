@@ -8,14 +8,19 @@ import random
 import sqlite3
 import threading
 import time
-from datetime import datetime, timezone
 from collections import defaultdict
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
 from typing import Callable, Iterable, Iterator, Mapping
 
-from .providers import AIResponse, OpenAICompatibleProvider, OpenRouterProvider, ProviderFailure
+from .providers import (
+    AIResponse,
+    OpenAICompatibleProvider,
+    OpenRouterProvider,
+    ProviderFailure,
+)
 
 logger = logging.getLogger(__name__)
 

@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from app.schemas.mobile import MobileExperienceRequest, MobileExperienceResponse
 from app.services.mobile.experience import MobileExperienceService
 
-
 router = APIRouter()
 service = MobileExperienceService()
 

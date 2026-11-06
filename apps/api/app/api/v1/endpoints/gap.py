@@ -16,10 +16,10 @@ from app.schemas.gap import (
     GapHypothesesRequest,
     GapHypothesesResponse,
     GapIdeaRequest,
-    GapReportRequest,
-    GapReportResponse,
     GapRecommendRequest,
     GapRecommendResponse,
+    GapReportRequest,
+    GapReportResponse,
     GapStateRequest,
 )
 from app.services.gap.detector import GapDetectionService

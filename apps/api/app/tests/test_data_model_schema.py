@@ -12,8 +12,8 @@ from app.schemas.entities import (
     LiteratureReviewEntity,
     MessageEntity,
     NoteEntity,
-    PluginRegistrationEntity,
     PlagiarismCheckResultEntity,
+    PluginRegistrationEntity,
     PrivateNoteEntity,
     PromptTemplateEntity,
     RefreshTokenEntity,
@@ -22,7 +22,6 @@ from app.schemas.entities import (
     SummaryEntity,
     WebhookSubscriptionEntity,
 )
-
 
 SCHEMA_PATH = Path(__file__).resolve().parents[4] / "infra" / "db" / "schema.sql"
 

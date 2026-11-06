@@ -7,7 +7,6 @@ from typing import Any
 from app.schemas.comparison import PaperProfile
 from app.schemas.paper import PaperRecord
 
-
 _PAGE = re.compile(r"\[PDF page (\d+)\]\s*", re.IGNORECASE)
 _URL = re.compile(r"https?://(?:www\.)?(?:github\.com|gitlab\.com|bitbucket\.org|huggingface\.co)/[^\s<>()\]\[\"']+", re.I)
 _FRAMEWORKS = re.compile(r"\b(PyTorch|TensorFlow|Keras|JAX|scikit-learn|\\texttt\{[^}]+\})\b", re.I)

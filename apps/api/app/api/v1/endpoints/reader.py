@@ -27,7 +27,12 @@ from app.schemas.reader import (
 )
 from app.services.credits.service import CreditLimitReached, get_credit_service
 from app.services.reader.intelligence import ReaderAIUnavailable
-from app.services.reader.service import MAX_UPLOAD_BYTES, DocumentNotFound, ReaderInputError, get_reader_service
+from app.services.reader.service import (
+    MAX_UPLOAD_BYTES,
+    DocumentNotFound,
+    ReaderInputError,
+    get_reader_service,
+)
 
 router = APIRouter()
 

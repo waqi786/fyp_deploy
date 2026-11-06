@@ -1,8 +1,12 @@
 from fastapi import APIRouter
 
-from app.schemas.summary import ParagraphExplainRequest, ParagraphExplainResponse, SummaryRequest, SummaryResponse
+from app.schemas.summary import (
+    ParagraphExplainRequest,
+    ParagraphExplainResponse,
+    SummaryRequest,
+    SummaryResponse,
+)
 from app.services.summarization.extractive import ExtractiveSummarizer
-
 
 router = APIRouter()
 summarizer = ExtractiveSummarizer()

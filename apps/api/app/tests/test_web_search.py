@@ -94,8 +94,8 @@ def test_tavily_web_result_parser_keeps_site_not_provider_identity():
 
 
 def test_federated_search_mixes_fake_web_and_scholarly_results():
-    from app.services.search.service import FederatedSearchService
     from app.schemas.search import SourceSearchRequest
+    from app.services.search.service import FederatedSearchService
 
     class FakePaperProvider:
         source_name = "openalex"
@@ -126,8 +126,8 @@ def test_federated_search_mixes_fake_web_and_scholarly_results():
 
 
 def test_federated_search_emits_incremental_source_events_with_fake_providers():
-    from app.services.search.service import FederatedSearchService
     from app.schemas.search import SourceSearchRequest
+    from app.services.search.service import FederatedSearchService
 
     class FakePaperProvider:
         source_name = "openalex"
@@ -166,9 +166,10 @@ def test_federated_search_emits_incremental_source_events_with_fake_providers():
 
 def test_search_stream_endpoint_emits_partial_results_and_final_response(monkeypatch):
     from fastapi.testclient import TestClient
+
+    from app.api.v1.endpoints import search as search_endpoint
     from app.main import app
     from app.schemas.paper import PaperSearchResponse, SearchPagination
-    from app.api.v1.endpoints import search as search_endpoint
 
     result = web_item("sse-fixture").model_copy(update={"publication_type": "article", "source": "fixture"})
 

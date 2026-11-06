@@ -1,6 +1,6 @@
 from app.schemas.graph import CitationEdge, CitationGraphRequest, CitationNode
-from app.services.models.providers import ModelProvider
 from app.services.graph.metrics import CitationGraphService
+from app.services.models.providers import ModelProvider
 from app.services.summarization.extractive import ExtractiveSummarizer
 from app.services.writing.self_critique import SelfCritiqueService
 

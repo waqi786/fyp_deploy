@@ -4,7 +4,12 @@ import base64
 import httpx
 import pytest
 
-from app.schemas.document import ExtractedFigure, FigureComparisonRequest, FigureQuestionRequest, LibraryImageSearchRequest
+from app.schemas.document import (
+    ExtractedFigure,
+    FigureComparisonRequest,
+    FigureQuestionRequest,
+    LibraryImageSearchRequest,
+)
 from app.schemas.paper import PaperRecord
 from app.services.documents.image_analysis import FigureImageAnalysisService
 from app.services.documents.multimodal_workbench import MultimodalWorkbenchService
