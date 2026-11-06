@@ -22,7 +22,7 @@ dependencies = [
   "python-multipart>=0.0.9,<1.0",
   "PyMuPDF>=1.24,<2.0",
   "pytesseract>=0.3,<1.0",
-  "Pillow>=10.0,<12.0",
+  "Pillow>=13.0.0,<14.0",
 ]
 
 [project.scripts]
@@ -45,4 +45,3 @@ markers = [
   "integration: marks tests that hit live upstream services",
   "live: marks tests that require external providers or network and are skipped by default",
 ]
-
