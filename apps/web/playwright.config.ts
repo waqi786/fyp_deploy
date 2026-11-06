@@ -7,6 +7,7 @@ export default defineConfig({
   testDir: "./tests/e2e",
   outputDir: "./test-results",
   fullyParallel: true,
+  workers: process.env.CI ? 2 : undefined,
   reporter: "list",
   use: {
     baseURL,
