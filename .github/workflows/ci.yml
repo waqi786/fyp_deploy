@@ -27,7 +27,7 @@ jobs:
       - run: pip install -e .
       - run: pip install pip-audit ruff==0.15.22
       - run: ruff check app --select E4,E7,E9,F,I
-      - run: pip-audit --skip-editable
+      - run: pip-audit .
       - run: pytest app/tests -q
       - run: python -m compileall app
 
