@@ -309,7 +309,7 @@ function plainText(value: string) {
   if (/[<&]/.test(text) && typeof DOMParser !== "undefined") {
     text = new DOMParser().parseFromString(text.replace(/<\/?(jats:)?[a-z][^>]*>/gi, " "), "text/html").body.textContent || "";
   }
-  return text.replace(/[​﻿]/g, "").replace(/\s+/g, " ").trim();
+  return text.replace(/[\u200b\ufeff]/g, "").replace(/\s+/g, " ").trim();
 }
 
 function comparableWord(word: string) {
@@ -493,7 +493,9 @@ function useDismiss(open: boolean, refs: Array<RefObject<HTMLElement | null>>, o
       onClose();
     };
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") {
+        onClose();
+      }
     };
     document.addEventListener("pointerdown", onPointer);
     document.addEventListener("keydown", onKey);

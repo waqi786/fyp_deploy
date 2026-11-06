@@ -88,7 +88,7 @@ def test_uploaded_pdf_is_stored_and_comparison_uses_saved_pdf_text(client):
     })
     assert compared.status_code == 200, compared.text
     payload = compared.json()
-    stored = ComparisonPdfRepository.load_papers(owner_id="test-user", comparison_id=comparison_id, file_ids=[item["id"] for item in files])
+    ComparisonPdfRepository.load_papers(owner_id="test-user", comparison_id=comparison_id, file_ids=[item["id"] for item in files])
     assert payload["comparison_count"] == 2
     assert {row["title"] for row in payload["rows"]} == {"first", "second"}
     assert all(row["full_text_available"] for row in payload["rows"])

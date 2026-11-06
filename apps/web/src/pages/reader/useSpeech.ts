@@ -46,6 +46,7 @@ export function useSpeech() {
   const voiceRef = useRef<SpeechSynthesisVoice | null>(null);
   const langRef = useRef("en");
   const rateRef = useRef(1);
+  const speakNextRef = useRef<(token: number) => void>(() => undefined);
 
   useEffect(() => {
     rateRef.current = rate;
@@ -74,10 +75,14 @@ export function useSpeech() {
     utterance.lang = langRef.current;
     if (voiceRef.current) utterance.voice = voiceRef.current;
     utterance.rate = rateRef.current;
-    utterance.onend = () => speakNext(token);
-    utterance.onerror = () => speakNext(token);
+    utterance.onend = () => speakNextRef.current(token);
+    utterance.onerror = () => speakNextRef.current(token);
     window.speechSynthesis.speak(utterance);
   }, []);
+
+  useEffect(() => {
+    speakNextRef.current = speakNext;
+  }, [speakNext]);
 
   /** Returns false when the device has no voice for this language (nothing is spoken). */
   const speak = useCallback((id: string, texts: string[], language: string) => {

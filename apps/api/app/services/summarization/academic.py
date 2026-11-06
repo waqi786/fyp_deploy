@@ -1,6 +1,5 @@
 import math
 import re
-from collections import Counter
 
 
 STOPWORDS = {
@@ -98,7 +97,6 @@ ACADEMIC_TRANSLATION_TERMS = {
         "findings": "نتائج",
         "conclusion": "نتیجہ",
         "compares": "موازنہ کرتا ہے",
-        "compares": "موازنہ کرتا ہے",
         "main idea": "مرکزی خیال",
         "in simple words": "سادہ الفاظ میں",
         "simple explanation": "سادہ تشریح",
@@ -123,7 +121,6 @@ ACADEMIC_TRANSLATION_TERMS = {
         "than": "سے",
         "external validation": "بیرونی توثیق",
         "discusses": "زیر بحث لاتا ہے",
-        "models": "ماڈلز",
         "recall": "ریکال",
         "precision": "پریسیژن",
         "interpretability": "قابل فہم ہونا",
@@ -419,7 +416,7 @@ def localize_academic_text(text: str, language: str) -> str:
     # best-effort fallback for offline/demo environments and is never the source
     # of truth when a provider returns translated text.
     try:
-        from app.services.search.translation import TranslationUnavailable, translate_text
+        from app.services.search.translation import translate_text
         translated_text = translate_text(text, language_key)
         if translated_text and translated_text.strip():
             return translated_text

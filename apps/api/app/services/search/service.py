@@ -626,6 +626,8 @@ class FederatedSearchService:
             calls.extend((name, provider, original_request) for name, provider in ctx.providers if name in MULTILINGUAL_SOURCES)
 
         async def collect(name: str, provider: SearchProvider, request: SourceSearchRequest) -> tuple[list[Any], bool]:
+            if emit is not None:
+                emit("source_started", {})
             try:
                 papers = await self._search_provider_with_timeout(provider, request)
             except Exception as error:

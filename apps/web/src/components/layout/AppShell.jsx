@@ -660,6 +660,9 @@ export function AppShell({ children, theme, onThemeChange, language, onLanguageC
     { label: dictionary.ui.language, value: `${selectedLanguageName} (${dictionary.ui[direction] || direction.toUpperCase()})` },
     { label: dictionary.ui.theme, value: dictionary.themes[theme] || theme },
   ];
+  const mobileTabs = tabsFor(language);
+  const primaryMobileTabs = mobileTabs.slice(0, 4);
+  const overflowMobileItems = mobileTabs.slice(4);
   const primaryMobileItems = navigationItems;
 
   useEffect(() => {
@@ -751,11 +754,25 @@ export function AppShell({ children, theme, onThemeChange, language, onLanguageC
           </div>
         </header>
         <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
-          {tabsFor(language).map((item) => (
+          {primaryMobileTabs.map((item) => (
             <NavLink key={item.to} to={item.to} end={item.to === "/"} data-no-translate="" lang={language}>
               {item.label}
             </NavLink>
           ))}
+          <div className="mobile-more-wrap">
+            <button ref={moreTriggerRef} type="button" aria-label="More" aria-haspopup="menu" aria-expanded={moreOpen} onClick={() => setMoreOpen((open) => !open)}>
+              {language === "ur" ? "مزید" : "More"}
+            </button>
+            {moreOpen ? (
+              <div ref={moreMenuRef} className="mobile-more-menu" role="menu" aria-label="More navigation">
+                {overflowMobileItems.map((item) => (
+                  <NavLink key={item.to} to={item.to} end={item.to === "/"} role="menuitem" data-no-translate="" lang={language} onClick={() => setMoreOpen(false)}>
+                    {item.label}
+                  </NavLink>
+                ))}
+              </div>
+            ) : null}
+          </div>
         </nav>
         <aside className="app-sidebar hidden" aria-hidden="true">
           <div className="sidebar-body flex min-h-0 w-full flex-1 flex-col gap-4 overflow-hidden px-3 pb-3 pt-4">

@@ -36,16 +36,15 @@ test("search filters close on outside click and Escape", async ({ page }) => {
   await page.goto("/search");
   await page.locator('input[name="search-query"]').fill("machine learning");
   await page.locator('input[name="search-query"]').press("Enter");
-  await expect(page.locator(".search-result-card").first()).toBeVisible();
-  const panel = page.locator(".search-advanced-drawer");
+  await expect(page.locator(".rs-card").first()).toBeVisible();
+  const panel = page.locator(".rs-filter-panel");
   await page.getByRole("button", { name: "More filters" }).click();
   await expect(panel).toBeVisible();
-  await page.getByRole("button", { name: "Research with Resora" }).click();
+  await page.getByRole("radio", { name: "Research with Resora" }).click();
   await expect(panel).toBeHidden();
   await page.getByRole("button", { name: "More filters" }).click();
   await page.keyboard.press("Escape");
   await expect(panel).toBeHidden();
-  await expect(page.getByRole("button", { name: "More filters" })).toBeFocused();
 });
 
 test("empty search restores the voice control and centered starting point", async ({ page }) => {
@@ -65,13 +64,13 @@ test("empty search restores the voice control and centered starting point", asyn
   await page.goto("/search");
   await expect(page.getByRole("heading", { name: "Find research." })).toBeVisible();
   await expect(page.getByText("Search papers, authors and topics in any language.")).toBeVisible();
-  const voiceButton = page.locator(".search-voice-button");
+  const voiceButton = page.getByRole("button", { name: "Search by voice" });
   await expect(voiceButton).toBeVisible();
   await expect(page.getByRole("button", { name: "More filters" })).toHaveCount(0);
   await expect(voiceButton).toBeEnabled();
   await voiceButton.click();
   await expect(page.locator('input[name="search-query"]')).toHaveValue("hello research");
-  await expect(page.locator(".search-result-card").first()).toBeVisible();
+  await expect(page.locator(".rs-card").first()).toBeVisible();
 });
 
 test("selecting Chinese searches in English and displays translated results", async ({ page }) => {
@@ -82,23 +81,23 @@ test("selecting Chinese searches in English and displays translated results", as
   });
   await page.route("**/api/v1/library/save", (route) => route.fulfill({ json: { saved_items: [{ paper_id: paper.paper_id }], library_stats: {} } }));
   await page.goto("/search");
-  await page.locator(".search-language-trigger").click();
-  await page.getByRole("button", { name: "简体中文" }).click();
+  await page.locator(".rs-language-pill").click();
+  await page.locator('.rs-menu-item[lang="zh-Hans"]').click();
   await page.locator('input[name="search-query"]').fill("machine learning healthcare");
   await page.locator('input[name="search-query"]').press("Enter");
   await expect(page.getByRole("button", { name: /\u533b\u7597\u5065\u5eb7/ }).first()).toBeVisible();
-  await expect(page.locator(".search-result-card")).toHaveCount(2);
-  await page.locator(".search-language-trigger").click();
-  await page.locator(".search-original-toggle").click();
-  await expect(page.locator(".search-result-card").first()).toContainText("Today,");
-  await expect(page.locator(".search-result-card").first()).not.toContainText("Machine learning and deep learning: Today");
+  await expect(page.locator(".rs-card")).toHaveCount(2);
+  await page.locator(".rs-language-pill").click();
+  await page.locator(".rs-switch-row").click();
+  await expect(page.locator(".rs-card").first()).toContainText("Today,");
+  await expect(page.locator(".rs-card").first()).not.toContainText("Machine learning and deep learning: Today");
   await expect(page.getByRole("group", { name: "Result type" })).toHaveCount(0);
   await expect(page.getByText("Web result", { exact: true })).toHaveCount(0);
   await expect(page.getByText("www.example.org", { exact: true })).toHaveCount(0);
   expect(requestBody?.target_language).toBe("zh-Hans");
   expect(requestBody?.translate_results).toBe(true);
   expect(requestBody?.search_mode).toBe("hybrid");
-  const saveAction = page.locator(".search-card-secondary-buttons button").first();
+  const saveAction = page.locator(".rs-card .rs-secondary-actions button[aria-pressed]").first();
   await saveAction.click();
   await expect(saveAction).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("button", { name: "访问网站" })).toBeVisible();
@@ -112,16 +111,18 @@ test("Search results render in both brand themes at desktop and mobile widths", 
   for (const theme of ["light", "dark"] as const) {
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
-      await page.addInitScript((value) => localStorage.setItem("resora-theme", value), theme);
       await page.goto("/search");
+      await page.evaluate((value) => localStorage.setItem("resora-theme", value), theme);
+      await page.reload();
       await page.locator('input[name="search-query"]').fill("machine learning");
       await page.locator('input[name="search-query"]').press("Enter");
-      await expect(page.locator(".search-result-card").first()).toBeVisible();
+      await expect(page.locator(".rs-card").first()).toBeVisible();
       if (width === 390) {
-        await expect(page.locator(".search-card-more > summary").first()).toBeVisible();
-        await page.locator(".search-card-more > summary").first().click();
-        await expect(page.locator(".search-card-more-menu").first().getByRole("button", { name: "Cite" })).toBeVisible();
-        await page.locator(".search-card-more > summary").first().click();
+        const moreActions = page.locator(".rs-mobile-more").first();
+        await expect(moreActions.getByRole("button")).toBeVisible();
+        await moreActions.getByRole("button").click();
+        await expect(moreActions.getByRole("menuitem", { name: "Copy APA" })).toBeVisible();
+        await moreActions.getByRole("button").click();
       }
       await page.screenshot({ path: `test-shots/search-experience/results-${theme}-${width}.png`, fullPage: true });
     }

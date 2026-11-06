@@ -269,20 +269,26 @@ class LibraryStore:
             self._item(db, owner, item_id)
             fields, values = [], []
             if "status" in changes and changes["status"] in STATUSES:
-                fields.append("status=?"); values.append(changes["status"])
+                fields.append("status=?")
+                values.append(changes["status"])
             for flag in ("important", "read_later"):
                 if flag in changes and changes[flag] is not None:
-                    fields.append(f"{flag}=?"); values.append(1 if changes[flag] else 0)
+                    fields.append(f"{flag}=?")
+                    values.append(1 if changes[flag] else 0)
             if changes.get("tags") is not None:
-                fields.append("tags=?"); values.append(json.dumps(clean_tags(changes["tags"]), ensure_ascii=False))
+                fields.append("tags=?")
+                values.append(json.dumps(clean_tags(changes["tags"]), ensure_ascii=False))
             if changes.get("opened"):
-                fields.append("opened_at=?"); values.append(now())
+                fields.append("opened_at=?")
+                values.append(now())
                 if changes.get("status") is None:
                     fields.append("status=case when status='to_read' then 'reading' else status end")
             if changes.get("reader_doc_id"):
-                fields.append("reader_doc_id=?"); values.append(_clip(changes["reader_doc_id"], 120))
+                fields.append("reader_doc_id=?")
+                values.append(_clip(changes["reader_doc_id"], 120))
             if fields:
-                fields.append("updated_at=?"); values.append(now())
+                fields.append("updated_at=?")
+                values.append(now())
                 db.run(f"update library_items set {', '.join(fields)} where id=? and owner_id=?", (*values, item_id, owner))
             return self._item(db, owner, item_id)
 
@@ -395,7 +401,8 @@ class LibraryStore:
         clauses, values = ["owner_id=?"], [owner]
         for column, value in (("kind", kind), ("project_id", project_id), ("item_id", item_id)):
             if value:
-                clauses.append(f"{column}=?"); values.append(value)
+                clauses.append(f"{column}=?")
+                values.append(value)
         with self._db() as db:
             rows = db.all(f"select {', '.join(NOTE_COLUMNS)} from library_notes where {' and '.join(clauses)} order by updated_at desc", tuple(values))
         return [dict(zip(NOTE_COLUMNS, row)) for row in rows]
@@ -433,7 +440,8 @@ class LibraryStore:
     def list_tasks(self, owner: str, *, project_id: str | None = None) -> list[dict]:
         clauses, values = ["owner_id=?"], [owner]
         if project_id:
-            clauses.append("project_id=?"); values.append(project_id)
+            clauses.append("project_id=?")
+            values.append(project_id)
         with self._db() as db:
             rows = db.all(f"select {', '.join(TASK_COLUMNS)} from library_tasks where {' and '.join(clauses)} order by done, coalesce(due_date, '9999'), created_at", tuple(values))
         return [_task_dict(row) for row in rows]

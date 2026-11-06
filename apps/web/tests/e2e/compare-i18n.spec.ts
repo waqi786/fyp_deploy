@@ -3,6 +3,7 @@
  * and machine translation of table values (original passages kept). Every API call is mocked.
  */
 import { expect, test, type Page, type Route } from "@playwright/test";
+import { copyFileSync, readFileSync } from "node:fs";
 
 const comparisonId = "bfa6a27e-d302-4c8b-8e27-713dbcbfd170";
 const files = [
@@ -137,6 +138,7 @@ async function leftoverEnglish(page: Page) {
 }
 
 test("Urdu: every Compare label comes from the catalog, in the table and every Insights tab", async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem("resora-language", "ur"));
   await mock(page);
   await page.goto("/comparison?lang=ur");
   await expect(page.getByRole("heading", { name: "اپنے مقالات کا موازنہ کریں۔" })).toBeVisible();
@@ -162,6 +164,7 @@ test("Urdu: every Compare label comes from the catalog, in the table and every I
 
 test("Urdu: table values can be shown in Urdu; the source passage stays original with its translation beside it", async ({ page }) => {
   const calls = await mock(page);
+  await page.addInitScript(() => localStorage.setItem("resora-language", "ur"));
   await page.goto("/comparison?lang=ur");
   await runComparison(page, "موازنہ کریں");
   await page.getByRole("button", { name: /اردو میں دکھائیں/ }).click();
@@ -200,9 +203,9 @@ test("exports: Excel workbook and a printable PDF report", async ({ page }, test
   expect(download.suggestedFilename()).toBe("resora-comparison.xlsx");
   const path = testInfo.outputPath("comparison.xlsx");
   await download.saveAs(path);
-  const bytes = require("fs").readFileSync(path) as Buffer;
+  const bytes = readFileSync(path);
   expect(bytes.subarray(0, 2).toString()).toBe("PK");
-  if (process.env.XLSX_COPY) require("fs").copyFileSync(path, process.env.XLSX_COPY);
+  if (process.env.XLSX_COPY) copyFileSync(path, process.env.XLSX_COPY);
 
   await page.getByRole("button", { name: "Export", exact: true }).click();
   await page.getByRole("menuitem", { name: "PDF report" }).click();

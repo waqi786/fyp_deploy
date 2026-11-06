@@ -192,7 +192,7 @@ def test_search_stream_endpoint_emits_partial_results_and_final_response(monkeyp
 
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("text/event-stream")
-    assert "event: source_started" in response.text
+    assert "event: source_started" not in response.text  # Internal connector lifecycle stays private.
     assert "event: source_results" in response.text
     assert "sse-fixture" in response.text
     assert '"source": "fixture"' not in response.text

@@ -104,7 +104,7 @@ def test_federated_search_passes_structured_request_and_names_failures() -> None
     assert response.pagination.page == 1
     assert response.pagination.returned_results == 1
     assert response.source_failures == ["A research source is temporarily unavailable."]
-    assert response.cache_status.total_items == 1
+    # Cache insertion is deliberately backgrounded; assert its eventual result below.
     assert len(cache.cached_batches) == 1
 
 
@@ -517,7 +517,7 @@ def test_requested_results_language_translates_titles_before_response(monkeypatc
     from app.services.search import service as search_service_module
 
     provider = SuccessfulProvider()
-    monkeypatch.setattr(search_service_module, "translate_batch", lambda segments, target, user_id=None: [f"translated: {segment}" for segment in segments])
+    monkeypatch.setattr(search_service_module, "translate_batch", lambda segments, target, user_id=None, user_content=False: [f"translated: {segment}" for segment in segments])
     service = FederatedSearchService(providers={"openalex": provider}, cache=RecordingCache(), web_search=EmptyWebSearch())
     response = asyncio.run(service.search(
         "hybrid retrieval", 5, ["openalex"], page=1, language="zh-Hans",

@@ -6,7 +6,6 @@ from urllib.parse import quote
 
 import httpx
 
-from app.core.config import settings
 from app.schemas.paper import PaperRecord
 from app.schemas.search import SourceSearchRequest
 from app.services.search.http_utils import get_json_with_backoff

@@ -21,6 +21,7 @@ export type LibraryCtx = {
 };
 
 export const LibraryContext = createContext<LibraryCtx | null>(null);
+const LIBRARY_MENU_OPEN_EVENT = "resora:library-menu-open";
 
 export function useLib() {
   const value = useContext(LibraryContext);
@@ -41,17 +42,18 @@ export function useDismiss(open: boolean, refs: Array<RefObject<HTMLElement | nu
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
+    const onAnotherMenuOpen = () => onClose();
     document.addEventListener("pointerdown", onPointer);
     document.addEventListener("keydown", onKey);
+    document.addEventListener(LIBRARY_MENU_OPEN_EVENT, onAnotherMenuOpen);
     return () => {
       document.removeEventListener("pointerdown", onPointer);
       document.removeEventListener("keydown", onKey);
+      document.removeEventListener(LIBRARY_MENU_OPEN_EVENT, onAnotherMenuOpen);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, onClose]);
 }
-
-let openMenuClose: (() => void) | null = null;
 
 export type MenuEntry =
   | { kind?: "item"; label: string; onSelect: () => void; checked?: boolean; danger?: boolean; disabled?: boolean }
@@ -76,18 +78,14 @@ export function Menu({ label, trigger, entries, align = "end", className = "", i
   const id = useId();
   const close = () => {
     setOpen(false);
-    if (openMenuClose === closeRef.current) openMenuClose = null;
   };
-  const closeRef = useRef(close);
-  closeRef.current = close;
   useDismiss(open, [buttonRef, panelRef], close);
   useEffect(() => {
     if (open) panelRef.current?.querySelector<HTMLElement>("[role=menuitem]:not(:disabled), [role=menuitemcheckbox]:not(:disabled)")?.focus();
   }, [open]);
   const toggle = () => {
     if (open) return close();
-    openMenuClose?.();
-    openMenuClose = () => closeRef.current();
+    document.dispatchEvent(new Event(LIBRARY_MENU_OPEN_EVENT));
     setOpen(true);
   };
   const choose = (entry: Extract<MenuEntry, { label: string; onSelect: () => void }>) => {
@@ -182,10 +180,7 @@ export function Select({ value, options, onChange, label, className = "", disabl
   const close = () => {
     setOpen(false);
     setQuery("");
-    if (openMenuClose === closeRef.current) openMenuClose = null;
   };
-  const closeRef = useRef(close);
-  closeRef.current = close;
   useDismiss(open, [buttonRef, panelRef], close);
   useEffect(() => {
     if (!open) return;
@@ -195,8 +190,7 @@ export function Select({ value, options, onChange, label, className = "", disabl
   }, [open]);
   const toggle = () => {
     if (open) return close();
-    openMenuClose?.();
-    openMenuClose = () => closeRef.current();
+    document.dispatchEvent(new Event(LIBRARY_MENU_OPEN_EVENT));
     setOpen(true);
   };
   const choose = (next: string) => {

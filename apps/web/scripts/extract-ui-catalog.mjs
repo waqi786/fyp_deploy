@@ -19,6 +19,7 @@ function filesUnder(directory) {
 
 function add(value, allowWord = false) {
   const normalized = value.replace(/\s+/g, " ").trim();
+  if (/^(?:[\w/-]+\s+)+[\w/-]+$/.test(normalized) && /(?:^|\s)(?:border|text|bg)-[\w/]+(?:\s|$)/.test(normalized)) return;
   if (!normalized || normalized.length < 2 || normalized.length > 500 || !/[\p{L}]/u.test(normalized)) return;
   if (/^(?:https?:\/\/|\/|#[\w-]+$)/i.test(normalized) || /^(?:GET|POST|PUT|PATCH|DELETE)\s/i.test(normalized)) return;
   if (!allowWord && /^[a-z][a-z\d]*(?:[_-][a-z\d]+)*$/.test(normalized)) return;
