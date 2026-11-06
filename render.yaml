@@ -5,7 +5,7 @@ services:
     plan: free
     region: singapore
     rootDir: apps/api
-    dockerfilePath: apps/api/Dockerfile
+    dockerfilePath: Dockerfile
     healthCheckPath: /health
     envVars:
       - key: PORT
