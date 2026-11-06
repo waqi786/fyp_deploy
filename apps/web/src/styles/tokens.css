@@ -1,0 +1,63 @@
+/* Canonical Resora light/dark design tokens. Keep palette edits here. */
+:root,
+body[data-theme="dark"] {
+  color-scheme: dark;
+  --resora-bg: #161818;
+  --resora-surface: #1E2122;
+  --resora-surface-2: #262A2B;
+  --resora-text: #ECEEEC;
+  --resora-muted: #9AA19F;
+  --resora-border: #2F3335;
+  --resora-accent: #4DFF9A;
+  --resora-accent-hover: #3BE886;
+  --resora-on-accent: #0E1A12;
+  --resora-accent-soft: rgba(77, 255, 154, 0.10);
+  --resora-danger: #FF6B5B;
+  --resora-warning: #F2B544;
+  --resora-success: #4DFF9A;
+  --resora-shadow: 0 0 0 1px rgba(77, 255, 154, 0.06), 0 14px 40px rgba(0, 0, 0, 0.4);
+  --resora-font-display: "Newsreader", Georgia, serif;
+  --resora-font-ui: "Manrope", "Segoe UI", Arial, sans-serif;
+  --resora-radius-pill: 999px;
+  --resora-radius-card: 18px;
+  --resora-radius-drawer: 20px;
+  --resora-radius-input: 14px;
+}
+body[data-theme="light"] {
+  color-scheme: light;
+  --resora-bg: #FAF7F2;
+  --resora-surface: #FFFFFF;
+  --resora-surface-2: #F4EEE6;
+  --resora-text: #1C1714;
+  --resora-muted: #6B615A;
+  --resora-border: #EDE5DA;
+  --resora-accent: #D13A12;
+  --resora-accent-hover: #B8320F;
+  --resora-on-accent: #FFFFFF;
+  --resora-accent-soft: #FCE8DE;
+  --resora-danger: #C0392B;
+  --resora-warning: #9A6212;
+  --resora-success: #2E8B57;
+  --resora-shadow: 0 14px 40px rgba(160, 60, 20, 0.10);
+}
+:root {
+  --resora-text-12: 12px;
+  --resora-text-13: 13px;
+  --resora-text-14: 14px;
+  --resora-text-15: 15px;
+  --resora-text-17: 17px;
+  --resora-text-20: 20px;
+  --resora-text-26: 26px;
+  --resora-text-34: 34px;
+  --resora-text-46: 46px;
+  --resora-text-56: 56px;
+  --resora-space-1: 4px;
+  --resora-space-2: 8px;
+  --resora-space-3: 12px;
+  --resora-space-4: 16px;
+  --resora-space-5: 20px;
+  --resora-space-6: 24px;
+  --resora-space-8: 32px;
+  --resora-space-10: 40px;
+  --resora-space-14: 56px;
+}

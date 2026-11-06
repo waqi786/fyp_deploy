@@ -1,0 +1,32 @@
+{
+  "name": "Resora",
+  "short_name": "Resora",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#10212b",
+  "theme_color": "#1f4f4a",
+  "description": "Research operating system with search, grounded chat, and literature workflows.",
+  "categories": ["productivity", "education", "research"],
+  "shortcuts": [
+    {
+      "name": "Voice Chat",
+      "short_name": "Voice",
+      "url": "/#mobile",
+      "description": "Open mobile voice-first chat."
+    },
+    {
+      "name": "Saved Papers",
+      "short_name": "Papers",
+      "url": "/#foundation",
+      "description": "Jump into offline-ready saved papers."
+    }
+  ],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

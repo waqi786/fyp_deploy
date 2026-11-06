@@ -1,0 +1,50 @@
+{
+  "name": "resora-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test",
+    "i18n:extract": "node scripts/extract-ui-catalog.mjs",
+    "i18n:check": "node scripts/extract-ui-catalog.mjs --check && node scripts/check-ui-catalogs.mjs",
+    "lint": "eslint src --quiet",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,css}\"",
+    "test": "npm run test:e2e",
+    "e2e": "playwright test",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "lint:report": "eslint src"
+  },
+  "dependencies": {
+    "cytoscape": "^3.30.2",
+    "framer-motion": "^12.23.12",
+    "pdfjs-dist": "5.4.624",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.7.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.64.1",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^6.0.3",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0",
+    "postcss": "^8.4.49",
+    "prettier": "^3.9.10",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.71.2",
+    "vite": "^8.1.4"
+  }
+}

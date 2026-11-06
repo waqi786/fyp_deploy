@@ -1,0 +1,36 @@
+from fastapi import APIRouter
+
+from app.api.v1.endpoints import advanced_ai as _advanced_ai
+from app.api.v1.endpoints import agents, analytics, chat, collaboration, comparison, developer, documents, drafts, evaluation, exports, gap, graph, health, library, mobile, personalization, quality, reader, roadmap, search, security, summaries, trust, verification, workspaces, write, writing, ws
+
+
+api_router = APIRouter()
+api_router.include_router(health.router, prefix="/health", tags=["health"])
+api_router.include_router(search.router, prefix="/search", tags=["search"])
+api_router.include_router(reader.router, prefix="/reader", tags=["reader"])
+api_router.include_router(documents.router, prefix="/documents", tags=["documents"])
+api_router.include_router(chat.router, prefix="/chat", tags=["chat"])
+api_router.include_router(agents.router, prefix="/agents", tags=["agents"])
+api_router.include_router(comparison.router, prefix="/comparison", tags=["comparison"])
+api_router.include_router(writing.router, prefix="/writing", tags=["writing"])
+api_router.include_router(write.router, prefix="/write", tags=["write"])
+api_router.include_router(library.router, prefix="/library", tags=["library"])
+api_router.include_router(collaboration.router, prefix="/collaboration", tags=["collaboration"])
+api_router.include_router(personalization.router, prefix="/personalization", tags=["personalization"])
+api_router.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
+api_router.include_router(quality.router, prefix="/quality", tags=["quality"])
+api_router.include_router(roadmap.router, prefix="/roadmap", tags=["roadmap"])
+api_router.include_router(verification.router, prefix="/verification", tags=["verification"])
+api_router.include_router(developer.router, prefix="/developer", tags=["developer"])
+api_router.include_router(_advanced_ai.router, prefix="/intelligence", tags=["intelligence"])
+api_router.include_router(security.router, prefix="/security", tags=["security"])
+api_router.include_router(mobile.router, prefix="/mobile", tags=["mobile"])
+api_router.include_router(evaluation.router, prefix="/evaluation", tags=["evaluation"])
+api_router.include_router(gap.router, prefix="/gap", tags=["gap"])
+api_router.include_router(trust.router, prefix="/trust", tags=["trust"])
+api_router.include_router(exports.router, prefix="/exports", tags=["exports"])
+api_router.include_router(drafts.router, prefix="/drafts", tags=["drafts"])
+api_router.include_router(summaries.router, prefix="/summaries", tags=["summaries"])
+api_router.include_router(graph.router, prefix="/graph", tags=["graph"])
+api_router.include_router(workspaces.router, prefix="/workspaces", tags=["workspaces"])
+api_router.include_router(ws.router, prefix="/ws", tags=["websockets"])

@@ -1,0 +1,75 @@
+services:
+  api:
+    build:
+      context: ./apps/api
+    env_file:
+      - .env.example
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: sqlite:////app/storage/resora.db
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      LOCAL_TRANSLATOR_URL: http://translator-local:8091
+      LOCAL_TRANSLATION_LANGUAGES: ${LOCAL_TRANSLATION_LANGUAGES:-en,ur,ar,fa,hi,bn,pa-Arab,tr,id,ms,zh-Hans,zh-Hant,ja,ko,vi,th,es,pt-BR,pt-PT,fr,de,it,nl,pl,ru,uk,sv,el,ro,cs,hu,he,sw,ta,ps,sd}
+    ports:
+      - "8000:8000"
+    volumes:
+      - resora_data:/app/storage
+    command: python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+    depends_on:
+      - translator-local
+      - redis
+
+  translator-local:
+    build:
+      context: ./apps/translator-local
+    restart: unless-stopped
+    environment:
+      RESORA_MODELS_DIR: /models
+      XDG_DATA_HOME: /models
+      LOCAL_TRANSLATION_THREADS: ${LOCAL_TRANSLATION_THREADS:-1}
+      LOCAL_TRANSLATION_MAX_LOADED_MODELS: ${LOCAL_TRANSLATION_MAX_LOADED_MODELS:-1}
+      LOCAL_TRANSLATION_ENGINE_ORDER: ${LOCAL_TRANSLATION_ENGINE_ORDER:-argos,m2m100,opus_mt}
+      LOCAL_TRANSLATION_LANGUAGE_ROUTES: ${LOCAL_TRANSLATION_LANGUAGE_ROUTES:-}
+      TRANSLATION_DISABLE_ENGINES: ${TRANSLATION_DISABLE_ENGINES:-}
+    volumes:
+      - ./models:/models
+    expose:
+      - "8091"
+    mem_limit: ${LOCAL_TRANSLATION_MEMORY_LIMIT:-1536m}
+    cpus: ${LOCAL_TRANSLATION_CPUS:-1.0}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8091/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20m
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    volumes:
+      - redis_data:/data
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  web:
+    build:
+      context: ./apps/web
+    environment:
+      VITE_API_BASE_URL: http://127.0.0.1:8000/api/v1
+    ports:
+      - "5173:5173"
+    command: npm run dev -- --host 0.0.0.0 --port 5173
+    depends_on:
+      - api
+
+volumes:
+  resora_data:
+  redis_data:

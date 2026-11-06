@@ -1,0 +1,497 @@
+{
+  "name": "RESORA — MASTER BUILD PROMPT",
+  "version": "3.0",
+  "product": "Resora — AI Research OS (subscription-based, production-ready)",
+  "how_to_use": [
+    "Save this file in the repo as docs/MASTER_PROMPT.json (replace older versions).",
+    "Put the approved design images in docs/design/.",
+    "Tell Codex: Read docs/MASTER_PROMPT.json completely, including Parts 1A, 1B, 1C, 1D and 12A. Execute it phase by phase, starting with Phase 0 (Stabilize).",
+    "When Codex stops, say: Continue from NEXT_STEPS.md"
+  ],
+  "instructions_for_the_agent": [
+    "This JSON is the complete specification. Each part's content is Markdown split into lines; read every line.",
+    "Execute parts in the order given by PART 26 (Phases). Never skip Phase 0.",
+    "Never break protected features (PART 1B), especially Compare.",
+    "Never repeat any mistake listed in PART 1A.",
+    "Do not report anything as done before passing the visual verification gate (PART 1C).",
+    "Keys only in .env (git-ignored); never print, log or commit secrets; never create accounts or sign up anywhere."
+  ],
+  "brand": {
+    "light_theme": {
+      "accent": "#D13A12",
+      "background": "#FAF7F2",
+      "text_on_accent": "#FFFFFF"
+    },
+    "dark_theme": {
+      "accent": "#4DFF9A",
+      "background": "#161818",
+      "text_on_accent": "#0E1A12"
+    },
+    "fonts": {
+      "headings": "Newsreader",
+      "ui": "Manrope",
+      "scripts": "self-hosted Noto per script"
+    },
+    "rules": [
+      "tabs top-center",
+      "no sidebars",
+      "minimal text",
+      "text buttons",
+      "contrast ≥ 4.5:1",
+      "nothing internal shown to users"
+    ]
+  },
+  "changes": {
+    "v3": [
+      "PART 12A Listen: whole paper, summaries and answers read aloud in every language",
+      "PART 1D polish pass for every existing feature",
+      "Listen added to Phase 0 and Phase 4"
+    ],
+    "v2": [
+      "PART 1A mistakes never to repeat",
+      "PART 1B protected features (Compare)",
+      "PART 1C visual verification gate",
+      "PART 5 contrast and layout",
+      "PART 7 one language setting + auto-detection",
+      "PART 11 Search UI as approved designs",
+      "PART 14 Compare enhancements",
+      "Phase 0 Stabilize"
+    ]
+  },
+  "parts": [
+    {
+      "part": "0",
+      "title": "MISSION AND CONTEXT",
+      "content": [
+        "You are the lead engineer, product designer and QA owner of **Resora**, an AI-powered \"Research OS\". Repo: `resora-fyp-advanced` (React + TypeScript + Tailwind frontend in `apps/web`, FastAPI backend in `apps/api`).",
+        "",
+        "Resora is **not a university demo**. It is a commercial, subscription-based product that will be marketed, deployed and sold worldwide. It must be good enough that researchers love it, pay for it, recommend it, and investors take it seriously. Every screen, API, job and document you produce must meet production quality.",
+        "",
+        "**Who uses it:** undergraduate and master's students (FYP, thesis), PhD researchers, faculty supervisors, research assistants, study groups, industry R&D teams. In every country and language.",
+        "",
+        "**What it replaces:** a fragmented workflow of 10+ tools (Google Scholar, Semantic Scholar, Connected Papers, PDF readers, ChatGPT, Elicit/Consensus, Zotero, Notion, Excel, GitHub, email). One research environment instead of many.",
+        "",
+        "**Sources of truth:** `docs/source/Resora_Product_Vision.pdf` (34 sections) and `docs/source/RESORA-Proposal-Final.pdf`, summarized in `docs/PRODUCT_SPEC.md`. This master prompt extends them. Where this prompt is more specific, follow this prompt. Where the documents mention something this prompt does not, build it too.",
+        "",
+        "**Existing work** (reuse and upgrade, never duplicate): design tokens and UI primitives, global popover rule, 47-language registry and catalogs, AI Router (Gemini, OpenRouter free models, Groq, quotas, privacy rule, admin health), multi-source search with cross-lingual translation and web search (Tavily/Exa), Compare (PDF upload, deep extraction, filled-header table), Insights, local translation engines (M2M-100, Argos, OPUS-MT), STATUS.md, NEXT_STEPS.md."
+      ]
+    },
+    {
+      "part": "1",
+      "title": "HOW YOU WORK (rules for the whole build)",
+      "content": [
+        "1. **Audit first.** Before each phase, read `STATUS.md`, `NEXT_STEPS.md`, `docs/*`, `git log` and the relevant code. Write a short audit at the top of the phase section in `STATUS.md`: each requirement Done / Partial / Missing / Broken with file paths. Then implement everything not Done. Upgrade existing code in place; never build a second copy of a system.",
+        "2. **Phases in order.** Execute Phases 1–10 (Part 26) in order. Do not skip ahead. Inside a phase, work section by section without asking for confirmation.",
+        "3. **Quality gate after every section:** `npm run check:all` must pass with 0 failures and 0 lint warnings (backend tests with `--timeout=60`, frontend lint, typecheck, unit, E2E, build, i18n checks, design guards, \"no internal names in UI\" test, \"no direct provider calls\" check). Then commit with a clear conventional message (`feat(search): …`).",
+        "4. **Tests never call live services.** An autouse fixture installs fake LLM, translation, search, web-search, email and payment providers. Live checks are separate scripts marked `-m live`, skipped by default.",
+        "5. **Machine limits.** The dev laptop has no GPU and ~2–3 GB free RAM. Never download or run large models; never run long jobs (catalog generation, model downloads, big translation runs, load tests) inside VS Code. Write long jobs as scripts and put the exact PowerShell command in the docs; the owner runs them in a separate window. Tiny dry runs are allowed.",
+        "6. **Secrets.** Keys live only in `.env` (git-ignored). Never print, log or commit keys or user content. Keep `.env.example` and `.env.production.example` complete with empty placeholders and comments. If a key is missing, list it in the phase report with its signup link. Never create accounts or sign up anywhere yourself.",
+        "7. **Honesty.** Never claim something works without running it. Never invent data. If blocked, state exactly what is blocked and what the owner must do, then continue with everything else.",
+        "8. **Context limits.** When context or time runs low: stop at a clean point, commit, update `NEXT_STEPS.md` with exact remaining items. The owner will say \"Continue from NEXT_STEPS.md\".",
+        "9. **Phase report.** At the end of each phase write `docs/reports/PHASE_<n>.md`: what was built, screenshots (light/dark, desktop/mobile, English/Urdu/Chinese), test summary, missing keys, blockers, and end with `PHASE <n> COMPLETE` only if every acceptance item of that phase passes."
+      ]
+    },
+    {
+      "part": "1A",
+      "title": "MISTAKES THAT MUST NEVER HAPPEN AGAIN",
+      "content": [
+        "These problems actually happened in earlier iterations. Each one is now a hard rule with an automated check. Before reporting any work as done, confirm none of them exists anywhere in the app.",
+        "",
+        "| # | Mistake seen before | Rule now | Automated check |",
+        "|---|---|---|---|",
+        "| 1 | Light/white text on the neon-green button (\"RUN SEARCH\", \"Search\", \"Searching\", \"Open\") | On neon green (#4DFF9A) text and icons are ALWAYS #0E1A12 (near-black). On red-orange (#D13A12) text is ALWAYS #FFFFFF. | Contrast test on every element with an accent background (≥ 4.5:1) |",
+        "| 2 | Faded green \"Searching\" button with grey text | Loading buttons keep full accent color, same width, spinner + label in the on-accent color | Visual test of loading state |",
+        "| 3 | Dark highlight band behind the query text inside the search input | Inputs are transparent inside their container; never auto-select text after an action; autofill styles overridden | Computed background of inputs = transparent; selection empty after search |",
+        "| 4 | Internal status shown to users (\"Partial source status: 5 temporarily unavailable\"), source badges (OPENALEX, CROSSREF), scores (\"SEMANTIC 1\", \"INTENT 100%\", \"1.0 STRONG MATCH\") | Nothing internal ever reaches the UI (Part 2) | DOM test for source/provider/model names and debug words |",
+        "| 5 | Loading showed \"Searching\" plain text + \"Load more\" + a count before any result | Loading = progress line + skeleton cards only; count and pagination appear only after results | E2E asserts skeletons present and \"Load more\"/count absent during loading |",
+        "| 6 | Snippets repeated the title (\"Machine learning and deep learning: Today…\", \"Tutorial on …Prediction.: RNA-RNA…\"), JATS tags, \"Abstract\" prefixes, \"Unknown authors\" | Cleaner applied on ingest AND display, including cached records | Unit tests with these exact examples |",
+        "| 7 | Future years (2027) shown | Never show a year later than the current year; fall back to another valid date or hide | Unit test |",
+        "| 8 | Native browser `<select>` with white background and unreadable grey options in dark theme | Only custom DropdownMenu/Popover components styled with tokens | Lint rule forbidding native select in app code (except hidden form fallbacks) |",
+        "| 9 | Off-brand colors: navy/blue panels, cyan buttons, orange highlights in dark theme, glowing colored borders | Only token colors; dark accent only neon green; light accent only red-orange | Raw-hex guard + computed-color test against the token set |",
+        "| 10 | Uppercase monospace labels (\"SORT\", \"STUDY\", \"TOP DATABASES\", \"PAPER COUNT\") | Manrope sentence case for all UI labels | Lint/visual check |",
+        "| 11 | Duplicate controls (two \"Show filters\", \"Type\" and \"More filters\" doing the same thing, Sort inside the filter panel and in the header, language pills + language dropdown) | Every control exists once, in one place | Component tests per page |",
+        "| 12 | Pills wrapping (\"Language English\" with the chevron on a second line), elements overlapping (citation count over the \"Open\" button, sticky bar over cards) | All pills single-line; no overlaps at 1440, 1280, 1024, 768, 390 px | Bounding-box overlap test + text-clipping test |",
+        "| 13 | Icon-only buttons users did not understand | Primary and secondary actions are visible text buttons; icon-only allowed only for universal icons (close, menu) with tooltip + aria-label | Component test |",
+        "| 14 | Empty, unbalanced page before the first query | Every page has a designed empty state (centered, calm, one action) | Visual test |",
+        "| 15 | UI stayed in English when the user chose another language | One language setting translates EVERY UI word and all content (Part 7) | E2E in Urdu and Chinese checks a list of UI keys |",
+        "| 16 | Popovers that only closed by clicking the trigger again | Outside click, Esc, route change, opening another popover all close it | E2E |",
+        "| 17 | Work reported \"done\" without matching the design | Visual verification gate (Part 1C) before any \"done\" | Required screenshots + COMPARE.md |",
+        "| 18 | Tests hanging because they loaded real models | Tests use fakes only; pytest `--timeout=60` | CI |",
+        "| 19 | Long jobs crashing VS Code | Long jobs run as scripts in a separate PowerShell window | Docs contain exact commands |"
+      ]
+    },
+    {
+      "part": "1B",
+      "title": "PROTECTED FEATURES (do not break; only improve)",
+      "content": [
+        "**Compare (PDF upload → deep extraction → table → Insights) works and is approved. It is PROTECTED.**",
+        "- Do NOT rewrite, remove or simplify the Compare flow, its data model, its extraction pipeline, its filled-header table design, or the Insights tabs.",
+        "- Before touching any code Compare depends on (shared components, tokens, AI Router, PDF pipeline, translation), run the Compare regression suite. After the change, run it again; it must still pass with identical behavior.",
+        "- Create (if missing) `tests/regression/compare/`: an E2E test that uploads 3 fixture PDFs, runs Compare, checks the table (headers, cells with evidence, filled header colors in both themes), opens a cell's evidence, opens each Insights sub-tab and checks it is not blank, and exports CSV. Plus API tests with recorded AI responses. This suite runs in check:all.",
+        "- Allowed changes to Compare: the enhancements listed in Part 14 and bug fixes, each with tests, always keeping existing behavior working.",
+        "- The same protection applies to any feature the owner has approved (Home design, Insights Overview design). Record protected features in `docs/PROTECTED_FEATURES.md` with their regression tests."
+      ]
+    },
+    {
+      "part": "1C",
+      "title": "VISUAL VERIFICATION GATE (required before saying \"done\")",
+      "content": [
+        "1. Approved designs live in `docs/design/` (the owner provides PNGs: Home, Search light/dark, Compare light/dark, Insights Overview light/dark, Reader, Plans & usage). Treat them as the specification for layout, spacing, colors, typography and button styles.",
+        "2. For every page you build or change: take Playwright screenshots (light + dark, 1440 + 390, English + Urdu + Chinese) of every state (empty, loading, results/content, error, menus/popovers open).",
+        "3. Write `docs/screenshots/<page>/COMPARE.md` placing your screenshot next to the approved design and listing every visible difference. Fix differences until none remain (or justify a remaining difference in one line).",
+        "4. Run the automated design checks: contrast, overlap, text clipping, token colors, no native selects, no internal names, no hardcoded strings.",
+        "5. Only then may a section be reported as done."
+      ]
+    },
+    {
+      "part": "1D",
+      "title": "IMPROVE WHAT ALREADY EXISTS (polish pass)",
+      "content": [
+        "Many features already exist in the repo. Do not rebuild them from zero and do not leave them as they are: make each one production quality.",
+        "1. Create `docs/FEATURE_AUDIT.md`: list every existing page, tab, button and backend endpoint; for each one record what works, what is broken, what looks off-brand, what is missing compared with this prompt, and a score (0–5) for function, design, language support and speed.",
+        "2. Fix in this order: broken → confusing → off-brand → slow → missing details. Keep working behavior (Part 1B rules apply to every approved feature).",
+        "3. Every feature must: use only theme tokens (light: red-orange #D13A12 on off-white #FAF7F2 with white text on red; dark: neon green #4DFF9A on off-gray #161818 with #0E1A12 text on green); work in every PRODUCTION language including RTL; have designed empty, loading, error and success states; have text buttons that say what they do; be keyboard accessible; respect credits.",
+        "4. Re-score every feature after the polish pass; nothing below 4/5 may be reported as done."
+      ]
+    },
+    {
+      "part": "2",
+      "title": "THE GOLDEN RULE: WHAT USERS SEE vs WHAT STAYS IN THE BACKEND",
+      "content": [
+        "**Users see only:** clean results, clear actions, plain-language explanations, evidence they can click, their own data, their credits and plan.",
+        "",
+        "**Never shown to users** (backend, logs and admin console only):",
+        "- names of academic databases or sources a result came from (OpenAlex, Semantic Scholar, Crossref, arXiv, etc.);",
+        "- AI provider or model names, routing, failover, quotas, rate limits;",
+        "- internal scores, ranking weights, raw confidence numbers (users see High / Medium / Low with a plain tooltip);",
+        "- cache state, job internals, retries, stack traces, raw API errors, debug fields, database ids where not needed.",
+        "",
+        "**Enforce in code:**",
+        "- An API **presenter layer** converts internal models to public DTOs; internal fields never leave the server (only admin endpoints may expose them, behind admin auth).",
+        "- A frontend test renders every main page with realistic fixture data and **fails** if any source/provider/model name or debug key appears in the DOM.",
+        "- User-facing errors are calm, short, localized (\"Something went wrong. Try again.\") with a support reference id; details go to logs and Sentry."
+      ]
+    },
+    {
+      "part": "3",
+      "title": "PRODUCT PRINCIPLES (apply to every feature)",
+      "content": [
+        "1. **Calm, clean, premium.** Minimal text. One primary action per area. Generous whitespace. Never a card inside a card. Progressive disclosure: the 3–5 most useful things first; details open in drawers, sub-tabs or \"more\".",
+        "2. **Evidence-grounded AI (Vision §10).** Every AI statement links to its source: paper, page, section, quote. Confidence shown as High/Medium/Low. Never fabricate. \"Not reported\" only after searching the full text, with a reason.",
+        "3. **Honest about uncertainty.** Gap signals use evidence levels (Strong / Moderate / Limited / AI hypothesis), never \"this is the gap\". Machine translation is labelled. Preprints and retractions are flagged.",
+        "4. **Everyone, everywhere.** 40+ languages, RTL, accessible (WCAG 2.2 AA), works on low-end phones and slow internet.",
+        "5. **Fast.** Skeletons instead of spinners; streaming results; background jobs with progress for heavy work.",
+        "6. **Respect for user data.** Private by default; user content never goes to AI providers that may train on it; export and delete always available.",
+        "7. **Free to start, worth paying for.** Generous free plan; paid plans unlock volume, depth and teams (Part 9).",
+        "8. **No competitor names in the UI.**"
+      ]
+    },
+    {
+      "part": "4",
+      "title": "ARCHITECTURE AND BACKEND STANDARDS",
+      "content": [
+        "1. **Document it.** `docs/ARCHITECTURE.md` with Mermaid diagrams: web app, API, PostgreSQL, Redis, job workers, object storage, AI Router, search adapters, translation, email, payments, observability; request flow for search, PDF processing and AI answers.",
+        "2. **Layering.** routers (HTTP only) → services (business logic) → repositories (DB) → providers (external APIs, always behind interfaces). No business logic in routers; no provider calls outside provider modules (enforced by a check).",
+        "3. **Database.** PostgreSQL (Supabase in production; SQLite allowed only for local dev if already used). Alembic migrations for every change, reversible; UUID ids; `created_at`, `updated_at`, `deleted_at`; indexes on foreign keys and common filters; row ownership columns (`owner_id`, `workspace_id`) on all user data; Supabase RLS policies where the database is accessed directly.",
+        "4. **Jobs.** One job system (keep the existing one or choose RQ/Arq/Celery) with retries, backoff, idempotency keys, timeouts, cancellation, priorities (interactive vs batch), dead-letter queue, and progress events to clients via SSE. Heavy AI work never runs inside an HTTP request.",
+        "5. **Storage.** S3-compatible interface (Supabase Storage or Cloudflare R2 in production, local folder in dev); private buckets; short-lived signed URLs; content hashing for dedup.",
+        "6. **Config.** One typed settings module validating every env var at startup (fail fast with clear messages).",
+        "7. **API.** Versioned (`/api/v1`), consistent error shape `{code, message, request_id}`, cursor pagination, idempotency keys on POSTs that create paid work, OpenAPI schema; **generate a typed TypeScript client** from OpenAPI and use it everywhere in the frontend.",
+        "8. **Feature flags.** Server-side flags per environment, plan and user; client hook; unfinished features hidden in production.",
+        "9. **Rate limiting.** Per user and per IP on all public endpoints (Redis); stricter limits for anonymous users.",
+        "10. **Caching.** Redis for hot data (search results, translations, metadata) with clear TTLs; HTTP caching headers for static/public data.",
+        "11. **Internal research database (Vision §6–7).** Normalized entities: papers, versions, authors, institutions, venues, topics, methods, models, datasets, tasks, metrics, results, citations, code repositories, projects. Store relationships as edges (paper–cites–paper, paper–uses–dataset, paper–proposes–method, paper–uses–model, paper–written_by–author, paper–implemented_in–repo). Every search and every processed PDF enriches it. Background refresh for stale records."
+      ]
+    },
+    {
+      "part": "5",
+      "title": "DESIGN SYSTEM AND UX STANDARDS",
+      "content": [
+        "**Tokens** in one file (CSS variables + Tailwind mapping). Components never hardcode colors; a raw-hex guard is a lint ERROR.",
+        "",
+        "| Token | Light | Dark |",
+        "|---|---|---|",
+        "| bg | #FAF7F2 | #161818 |",
+        "| surface | #FFFFFF | #1E2122 |",
+        "| surface-2 | #F4EEE6 | #262A2B |",
+        "| text | #1C1714 | #ECEEEC |",
+        "| muted | #6B615A | #9AA19F |",
+        "| border | #EDE5DA | #2F3335 |",
+        "| accent | #D13A12 (hover #B8320F) | #4DFF9A (hover #3BE886) |",
+        "| on-accent | #FFFFFF | #0E1A12 |",
+        "| accent-soft | #FCE8DE | rgba(77,255,154,.10) |",
+        "| accent-ink | #A52C0B | #4DFF9A |",
+        "| danger / warning / success | #C0392B / #9A6212 / #2E8B57 | #FF6B5B / #F2B544 / #4DFF9A |",
+        "",
+        "**Rules:** dark accent is only neon green; light accent is only red-orange; no cyan, navy, purple, or orange in dark. Cards: 1px border, hover border = accent at 40%, never colored glows. Never a card inside a card.",
+        "",
+        "**Contrast and readability (strict):**",
+        "- Text on accent: dark theme neon green (#4DFF9A) → text #0E1A12; light theme red-orange (#D13A12) → text #FFFFFF. This applies to buttons, active tabs, active pills, filled table headers, badges with accent fill, toggles, progress labels.",
+        "- Body text ≥ 4.5:1, large text and UI components ≥ 3:1 in BOTH themes, including placeholders, muted text, disabled states (disabled = surface-2 background + muted text, still readable).",
+        "- Never place text on gradients or images without a solid backing.",
+        "- Selected/active states use accent-soft background + accent-ink text (+ check icon in menus), never color alone.",
+        "- Links: accent-ink, underlined on hover/focus.",
+        "",
+        "**Layout and arrangement (strict):**",
+        "- Each page uses one clear content column (reading pages 860 px max, data pages 1280 px max), centered, with consistent 24 px gutters (16 px on mobile). Headers, toolbars, filters and content align to the same column edges.",
+        "- Vertical rhythm from the spacing scale only (8, 12, 16, 24, 32, 40, 56). Section gaps 32–40 px; related items 8–12 px.",
+        "- One primary action per area, placed consistently (right side of toolbars and card footers; inside the search bar for search).",
+        "- Controls in a row share the same height (36 px small, 40 px default, 48–64 px for hero inputs) and are vertically centered.",
+        "- Text never wraps inside pills, chips and buttons; long labels truncate with ellipsis and a tooltip.",
+        "- No overlapping elements, no clipped text, no horizontal scroll on the page body at any width; tables and wide content scroll inside their own container.",
+        "- Sticky elements have a solid background equal to the page background, a 1px bottom border and a correct top offset; they never cover content.",
+        "- RTL mirrors the layout correctly (logical properties), CJK and Indic scripts get adequate line-height.",
+        "",
+        "**Typography:** Newsreader for headings, paper titles, big numbers and AI answers; Manrope for UI in sentence case. Uppercase only for small section labels (12px, letter-spacing 1px). Type, spacing, radius (pill 999, card 18, drawer 20, input 14), shadows and motion (120–200 ms, reduced-motion aware) are tokens.",
+        "",
+        "**Component library** (accessible, built on free MIT primitives such as Radix UI): Button, IconButton (tooltip + aria-label required), Pill, SegmentedControl, Badge, Card, Drawer, BottomSheet, Popover, DropdownMenu, Tooltip, Dialog, Tabs (top pill tabs + sub-tabs), Skeleton, EmptyState, ErrorState, Toast, Stepper, ProgressLine, DataTable (sticky header; filled header variant: dark neon green with dark text, light red-orange with white text), Chart wrapper (brand palette, \"view as table\"), CitationMarker, EvidenceDrawer, ConfidenceDot, LanguagePicker, CreditsPill, UsageMeter, Avatar, FileDropzone, KeyboardShortcut, PaperCard, PaperRow.",
+        "",
+        "**Global interaction rule:** every popover, menu, filter panel and non-modal drawer closes on outside click/tap, Esc, route change and when another opens; focus returns to the trigger. Built into primitives; no custom dropdowns anywhere.",
+        "",
+        "**Design checklist for every screen** (check before finishing any section): one clear primary action; can any text be removed?; no card inside a card; only token colors; calm in light and dark; correct in Urdu (RTL) and Chinese; works at 390 px; no internal data visible; empty, loading, error and partial states designed.",
+        "",
+        "**Dev-only gallery** at `/dev/ui` with every component in light/dark and LTR/RTL."
+      ]
+    },
+    {
+      "part": "6",
+      "title": "APP SHELL AND NAVIGATION",
+      "content": [
+        "- **Desktop top bar:** logo left; **centered pill tabs: Home · Search · Library · Reader · Compare · Gaps · Write**; right: language pill (globe + native name, e.g. \"English ▾\", \"اردو ▾\"), CreditsPill, notifications bell, theme toggle, avatar menu (Profile, Settings, Plan & billing, Team, Help, Sign out). No sidebars.",
+        "- **Mobile:** compact top bar + bottom tab bar (Home, Search, Library, Reader, More → Compare, Gaps, Write).",
+        "- Nested routes for sub-tabs (URL reflects state, shareable). Route-level code splitting (initial JS < 250 KB gzip).",
+        "- **Command palette** (Ctrl/Cmd+K): tabs, sub-tabs, paper search, projects, recent items, actions (New comparison, Upload PDF, New review, Change theme, Change language). Shortcuts dialog (?), \"/\" focuses search, g+h/s/l/r/c/g/w switches tabs.",
+        "- **Global states:** route error boundary (Retry + Sentry), offline banner, session-expired dialog, toast host, route progress line, skeletons, branded 404/500/maintenance pages.",
+        "- **Global \"Ask Resora\" bar** (bottom of Home, Search results, Reader, Compare, Library project): context-aware question box; answers are grounded in the current context (paper, project, comparison, results) with citations."
+      ]
+    },
+    {
+      "part": "7",
+      "title": "LANGUAGES (40+ worldwide): ONE SETTING, THE WHOLE PRODUCT SPEAKS IT",
+      "content": [
+        "**Goal:** Resora behaves like a good multilingual assistant. If a user writes in Urdu, Resora answers in Urdu. If a user chooses Chinese, every word in the product is Chinese.",
+        "",
+        "1. **One language setting** controls EVERYTHING: every UI word (navigation, tabs, buttons, labels, placeholders, tooltips, menus, filters, empty states, loading text, errors, toasts, emails, dates, numbers) AND all content (search result titles and snippets, summaries, chat answers, insights, gap signals, writing, exports' UI text). There are no separate \"interface\" and \"results\" language settings for normal users. (An advanced option \"Show original text\" exists in the language menu.)",
+        "2. **Auto mode (default):**",
+        "   - On first visit, use the browser language if it is a supported PRODUCTION language, otherwise English.",
+        "   - **Automatic detection from what the user writes:** when the user types a query or a question (search bar, Ask bar, chat, Research with Resora), detect its language (fast local detector; short queries use script + dictionary heuristics; ambiguous Latin-script queries keep the current language). If it differs from the current language, switch the whole interface and the results to that language immediately (RTL when needed) and show a small toast in the new language: \"Switched to اردو · Keep English\" (undo).",
+        "   - Results are ALWAYS returned in the detected/selected language, not English: the query is translated to English for searching (original kept and also searched), and titles, snippets, summaries and answers are translated into the user's language before display.",
+        "3. **Manual mode:** when the user picks a language from the language pill (globe + native name), that language is pinned: the whole product switches to it instantly (no reload flicker) and auto-detection no longer changes it (it may still suggest with a subtle toast). \"Auto (match my writing)\" is the first item in the menu to return to auto mode.",
+        "4. **Persistence:** saved per user in the database and locally for guests; applied before first paint; the `<html lang>` and `dir` attributes always match.",
+        "5. **Registry:** 47 languages with native names, direction, fonts, catalog coverage, engines, QA score, tier (PRODUCTION / BETA / PLANNED, defined in `docs/LANGUAGES.md`). The picker shows PRODUCTION languages normally, BETA with a small \"Beta\" tag, and hides PLANNED in production. **A language must never show a half-translated UI**: if its catalog is incomplete it is not selectable in production, and auto-detection falls back to the closest available language with a toast explaining it.",
+        "6. **Targets:** 32 PRODUCTION languages: en, zh-Hans, zh-Hant, hi, es, fr, ar, bn, pt-BR, pt-PT, ru, ur, id, de, ja, mr, te, tr, ta, vi, ko, fa, it, gu, kn, ml, pa-Guru, pa-Arab, fil, sw, th, pl. The rest (uk, nl, ms, ha, am, yo, jv, he, el, ro, cs, hu, sv, ps, sd) at least BETA.",
+        "7. **RTL and scripts:** logical CSS, mirrored icons, `<bdi>` isolation for DOIs, numbers, code, math and English technical terms; self-hosted, subsetted Noto fonts loaded only for the active script (Nastaliq for Urdu with taller line-height, Naskh for Arabic/Persian, Devanagari, Bengali, Gurmukhi, Gujarati, Tamil, Telugu, Kannada, Malayalam, Thai, Hebrew, Ethiopic, SC/TC/JP/KR); locale formatting for numbers, dates, relative time and ICU plurals; native digits where the locale expects them.",
+        "8. **UI catalogs:** static files; zero runtime API calls for UI text. Generation script on the AI Router in QUALITY MODE (2 translators + 1 judge model), ICU/placeholder protection, Resora glossary, translation memory, resumable batches, CLI flags; QA script (placeholders, script detection, length overflow, glossary, back-translation sample) writes QA scores; realistic schedule from provider quotas and exact PowerShell commands in `docs/LANGUAGES.md`. New strings added in any phase must be added to catalogs in the same phase.",
+        "9. **Content translation:** generated grounded in English, then translated with a scientific glossary (technical terms optionally kept in brackets the first time); numbers, units, equations, citations, DOIs and dataset/model names never altered; translations cached and shared; a small \"Translated\" marker with the original on hover/long-press; if translation fails, show the original with ONE subtle page-level line and retry in the background (never per-card errors).",
+        "10. **Visual QA** in every catalog language on every main page (1440/390): detect clipped text, overlaps and missing glyphs; fix layouts. CI fails on hardcoded user-visible strings and invalid ICU.",
+        "11. **Acceptance tests:** typing \"مشین لرننگ\" switches the UI to Urdu (dir=rtl) and shows Urdu results; typing \"机器学习\" switches to Chinese; pinning English prevents switching; every key in a checklist of 50 UI strings is translated on Home, Search, Reader, Compare, Library; no English words remain visible except names, titles kept by \"Show original\", and technical terms."
+      ]
+    },
+    {
+      "part": "8",
+      "title": "AI LAYER: ROUTER, GROUNDING, QUALITY, PRIVACY",
+      "content": [
+        "1. **AI Router** (`apps/api/app/services/ai_router/`) is the only path to any AI provider (enforced by a check).",
+        "   - Providers: Gemini, Groq, OpenRouter free models only (incl. Qwen; paid models blocked by a flag), and OpenAI-compatible providers enabled automatically when keys exist (Mistral, Cerebras, Cloudflare Workers AI, NVIDIA NIM, SambaNova, Hugging Face, SiliconFlow, ModelScope). Translation providers (Azure, Google Cloud, DeepL) and local engines (M2M-100, Argos, OPUS-MT) for translation tasks. Local tiny LLMs documented as optional, disabled by default.",
+        "   - Task routing table with weights per task (ui_translation, short_translation, long_translation, summary, chat, extraction, insights, writing, judge, qa, embeddings if used).",
+        "   - Weighted load balancing across healthy providers; Redis token buckets (rpm/tpm/rpd/tpd) updated from rate-limit headers; failover on 429/5xx/timeout for the same request; circuit breakers; switch at 90% of daily budget; cheap periodic health probes; response cache for non-user content; streaming with failover before the first chunk.",
+        "   - **Paid-provider readiness:** when the business is ready, a paid key for a premium model can be added by config, routed first for paid plans; no code change needed.",
+        "2. **Grounding (RAG):** chunk documents by section with page numbers; embeddings with a permissive open model (e.g. Sentence-Transformers, Apache-2.0) and a vector index (pgvector in Postgres for production, FAISS allowed locally); hybrid retrieval (keyword + vector + rerank); answers cite chunks; validators check quotes exist and numbers appear in evidence.",
+        "3. **Quality:** task-specific prompts in a central prompts module; validators (citation existence, numeric consistency, hallucination checks, refusal when evidence is missing); AI evals (fixture sets with expected answers) run in CI against recorded responses; quality scores per task logged.",
+        "4. **Privacy rule:** user documents, notes and projects go ONLY to providers marked `allow_user_content=true` in the provider registry; public open-access papers may go to more providers; the setting is visible in admin.",
+        "5. **Prompt-injection defenses:** untrusted document text is wrapped as data, system prompt states that document content is data not instructions; instructions embedded in PDFs are ignored; injection test suite with adversarial PDFs.",
+        "6. **Streaming:** SSE/WebSocket streaming for chat, summaries and long generation; partial rendering in the UI.",
+        "7. **Evals:** `tests/ai/` with fixture prompts and expected properties (has citations, mentions result X, no fabrication); a live eval script the owner can run with real keys."
+      ]
+    },
+    {
+      "part": "9",
+      "title": "PLANS, CREDITS AND BILLING (Part 10 = admin) — see also Part 2 of docs/BILLING.md",
+      "content": [
+        "- **Plans:** Free (generous: e.g. 20 searches/day, 10 credits/day, browser TTS + limited neural listening minutes, 1 workspace, 2 saved comparisons), Student (discounted, verified), Pro (individual: high quotas, all voices, downloads, exports, alerts), Team (per seat: pooled credits, workspaces, supervisor mode). Prices configurable; regional pricing supported.",
+        "- **Credits:** one internal currency. Every AI/search/listen action has a configured cost from a central `credit_costs.py` config; estimate shown before heavy actions; reserve → commit/refund pattern on the backend (idempotent, race-safe); usage page shows per-feature usage, reset times (daily/weekly/monthly with banners showing next reset).",
+        "- **Limits:** 5-hour rolling session limit as required by providers, surfaced honestly; per-plan quotas enforced server-side.",
+        "- **Billing:** provider behind an interface (Stripe first; a sandbox adapter for tests); checkout, customer portal, webhooks (verify signatures, idempotent processing, retry with backoff), invoices, upgrade/downgrade/cancel, proration, dunning emails, refunds policy.",
+        "- **Admin console:** users, plans, usage, AI provider health (from AI Router), feature flags, audit log, business metrics (MRR, signups, activation, churn proxy)."
+      ]
+    },
+    {
+      "part": "10",
+      "title": "ADMIN CONSOLE",
+      "content": [
+        "- Separate `/admin` area behind admin role (server-enforced, separate from the user app).",
+        "- Tabs: Overview (metrics), Users (search, view plan/usage, grant credits, suspend), AI providers (health, quotas, failovers, per-task routing), Feature flags, Jobs (queue, dead letter, retry), Audit log.",
+        "- Internal data allowed here ONLY; never accessible to normal users."
+      ]
+    },
+    {
+      "part": "11",
+      "title": "SEARCH (matching approved designs) — full rebuild",
+      "content": [
+        "Rebuild the Search experience to match the approved designs exactly (layout, spacing, colors, typography, button styles). Search state lives in the URL (query, page, filters, sort, view, language) so every search is shareable.",
+        "",
+        "**Hero search bar (large, centered):** generous height (48–64 px), token surface, 1px border, subtle focus ring; placeholder is a calm, localized sentence; typing detection for language switching; the search button is a text button inside the bar on the right (accent fill, on-accent text, no icon-only); loading shows a spinner inside the button in the on-accent color and the input is NOT highlighted or auto-selected.",
+        "",
+        "**Below the bar — a single row of small controls:** a few summary filters as dropdowns (Dataset, Type, More filters) and a Sort dropdown (one sort control only, not two); Language dropdown is NOT here (the language pill lives in the header).",
+        "",
+        "**Results:** cards, first 3–5 expanded with a snippet; result cards contain: title (Newsreader, 2 lines max), snippet with a highlighting, authors, publication year, venue, citations (numbered cards) in an openable popover, the Open button; paper cards show the year, publication year, citations, and a smart action button (Read).",
+        "Result cards use accent highlighting for matched terms and confidence markers.",
+        "",
+        "**Loading state:** skeleton cards only (no spinner and no \"Searching\" text in the button); the number of results and the \"Load more\" button appear only after the first page arrives.",
+        "",
+        "**Empty states:** designed empty state before the first query (centered, calm, one action); a no-results state with suggestions; a partial-results state if some sources fail (\"Some sources were unavailable — showing results from others\", localized).",
+        "",
+        "**Pagination:** Load more button at the bottom; results appear as skeleton cards while loading more.",
+        "",
+        "**Language switching:** a query typed in Urdu, Chinese, Spanish or any other language switches the whole interface and the results to that language (Part 7), with a small toast.",
+        "",
+        "**Research with Resora:** after results, a section explaining what Resora found across the papers: key findings, a mini table of methods, and a research summary — all grounded, cited, and localized.",
+        "",
+        "**Acceptance tests (screenshots + E2E):** all states match the approved designs in light/dark, 1440/390, English/Urdu/Chinese; no source names, no internal scores, no debug words in the DOM; loading = skeletons; empty/no-results states designed; no duplicate controls; pills single-line; search is shareable by URL.",
+      ]
+    },
+    {
+      "part": "12",
+      "title": "READER",
+      "content": [
+        "- **Reader:** upload a PDF (or open an open-access paper found in search) and read it with a clean reader: page view, section navigation, highlights and notes, search inside the document, dark-mode friendly rendering.",
+        "- **Right panel tabs: Summary · Chat · Figures · Translate · Info.**",
+        "- **Summary:** TL;DR, key points, structured summary (problem, research questions, motivation, contributions, method, data, baselines, experiments, metrics, results with numbers, limitations, future work, code/data availability), section-by-section; every sentence links to the paper page.",
+        "- **Chat with paper:** grounded chat about the document with page-level citations, suggested questions, and an answer history.",
+        "- **Figures:** extract figures and tables and explain them in plain language.",
+        "- **Translate:** full-paper translation (the whole paper translated while the original remains available), translation of the summary and of chat answers.",
+        "- **Info:** metadata, venue, year, DOI, citations, references, open-access status, license.",
+        "- **Listen:** read the whole paper, the summary, or any answer aloud with the browser voice or a neural voice (Part 12A)."
+      ]
+    },
+    {
+      "part": "12A",
+      "title": "LISTEN: RESORA READS PAPERS ALOUD (every language)",
+      "content": [
+        "**Goal:** a researcher can press one button (or just say/type \"read this paper\") and listen to the whole paper, its summary or any answer while doing other work, like an audiobook, in their own language.",
+        "",
+        "**How users start it (all localized):**",
+        "- A visible text button **\"Listen\"** (with a small headphones icon) in: Reader toolbar, Summary tab, Chat answers, Translate tab, Insights Overview, search result quick-view, Library item menu, and on any text selection (\"Listen to selection\").",
+        "- A \"Listen\" menu with clear choices: **Whole paper · Summary · Key points · This section · From here · Selected text**.",
+        "- **By asking:** the Ask bar and paper chat understand requests like \"read this paper aloud\", \"read the summary\", \"پیپر پڑھ کر سناؤ\", \"خلاصہ سناؤ\", \"把这篇论文读给我听\", \"lee el resumen en voz alta\" in every supported language (intent detection, not keyword matching) and start the player with the right content.",
+        "- Keyboard shortcut (L to play/pause in the Reader) and voice/text command \"stop\" / \"pause\" / \"next section\".",
+        "",
+        "**Player (persistent, beautiful, minimal):**",
+        "- A slim **mini-player bar at the bottom** of the screen (not a sidebar), solid surface background, 1px top border, safe-area aware on mobile. It keeps playing while the user moves to other tabs (Search, Library, Write) and never covers content (pages get bottom padding while it is open).",
+        "- Contents: paper title (1 line, ellipsis) + current section name; large round Play/Pause button in the accent color (dark: neon green with #0E1A12 icon; light: red-orange with white icon); back 15 s / forward 15 s; previous / next section; progress bar with section markers and time left; speed (0.75×, 1×, 1.25×, 1.5×, 1.75×, 2×); voice menu; \"Text\" button that opens the Reader at the sentence being read; close. Expandable to a full \"Now listening\" sheet with the section list (tap to jump), sleep timer (15 / 30 / 60 min, end of section), and queue.",
+        "- **Follow along:** in the Reader, the sentence being read is highlighted (accent-soft background + accent-ink text, readable in both themes) and auto-scrolls; auto-scroll turns off when the user scrolls manually and a small \"Back to reading position\" button appears.",
+        "- **Media Session API:** lock-screen / headphone / keyboard media keys control playback; title, section and artwork (Resora logo) shown in the OS media controls.",
+        "- **Queue (\"Listen later\"):** add papers or summaries to a listening queue from the Library and search; the queue plays in order; position saved per item.",
+        "- **Resume:** the exact position (paper, section, sentence) is saved to the user account and restored on any device.",
+        "",
+        "**What is read and how (clean listening script):**",
+        "- Built from the parsed document structure (GROBID sections), not raw PDF text: title, authors (first 3 + \"and colleagues\"), then sections in order.",
+        "- Skipped by default (toggles in settings): references list, page headers/footers, page numbers, line numbers, footnote markers, inline citation markers, URLs, DOIs, figure/table bodies.",
+        "- Figures and tables: short spoken caption with an option to hear an AI explanation in simple language.",
+        "- Equations: spoken in natural language; long equations: \"Equation 4 — see the paper\", with an option to hear the explanation.",
+        "- Abbreviations and terms: pronunciation lexicon per language (\"CNN\" spelled C-N-N, \"LaTeX\", \"SQL\", Greek letters, units \"km/h\", \"°C\", \"p < 0.05\"); numbers, dates and units localized.",
+        "- Hyphenation, broken lines, ligatures and two-column order fixed before speaking.",
+        "- **In the user's language:** if the user's language differs from the paper's, Resora reads the translated paper (Part 12 Translate pipeline, cached) with a short spoken note at the start in that language. The user can switch to \"Original language\" in the player.",
+        "",
+        "**Voices and engines (license-safe, every language):**",
+        "- All speech goes through a **TTS Router** (same pattern as the AI Router): provider adapters, per-language voice registry, quotas, caching, failover, health checks, admin page. No component calls a TTS engine directly.",
+        "- Engines, in priority order per language and plan (verify each license and record it in `docs/LICENSES.md` and `docs/TTS.md`):",
+        "  1. **Self-hosted neural TTS with permissive licenses** (Kokoro-82M, Apache-2.0, for supported languages; others only if BOTH code and voice weights allow commercial use).",
+        "  2. **Cloud TTS providers** behind config flags for paid plans and languages without a self-hosted voice; respect the privacy rule.",
+        "  3. **Browser speech synthesis (Web Speech API)** as the free, instant, private fallback: Resora picks the best matching voice (exact locale > same language > none).",
+        "- **Do NOT use:** non-commercial voices (Coqui XTTS, Meta MMS-TTS), unofficial wrappers of commercial services (edge-tts), or GPL components linked into the app.",
+        "- **Voice registry** (`docs/TTS.md` + DB): per language: voices, quality score, default voice, tier. Target: every PRODUCTION language has at least one natural voice; major languages get two (male- and female-sounding) where available.",
+        "- **Never read text with a voice of the wrong language.** If no voice exists for a language, offer the translated version with a tooltip and mark the language in the registry.",
+        "- RTL and complex scripts: sentence segmentation per language (Urdu/Arabic \"۔ ؟ ،\", Chinese/Japanese \"。！？\", Thai, Devanagari \"।\") so highlighting and resume work correctly.",
+        "",
+        "**Performance and cost:**",
+        "- Streaming: sentences/paragraph chunks; first audio < 2 s; 2–3 chunks buffered ahead; no gaps between sentences.",
+        "- Audio cache keyed by (document version, section, language, voice) in object storage; shared across users for public open-access papers.",
+        "- Speed changes use playback rate (no regeneration).",
+        "- **Credits:** browser voice = free; self-hosted voice = small cost per minute; cloud premium voice = higher cost per minute. Show the estimate before starting a whole-paper listen; reserve → commit per chunk → refund if stopped early.",
+        "",
+        "**Settings:** default voice per language, default speed, read references yes/no, read citations yes/no, figure explanations yes/no, auto-scroll yes/no, download quality.",
+        "",
+        "**Accessibility:** fully keyboard and screen-reader accessible (aria-live for section changes), respects reduced motion, and does not conflict with the user's own screen reader.",
+        "",
+        "**Design rules:** only theme tokens; the Listen button is an outline text button except when it is the primary action of an area; active state = accent-soft background + accent-ink text; no internal engine/provider names ever shown (friendly voice names like \"Ayesha — Urdu\", \"Wei — Chinese\").",
+        "",
+        "**Acceptance tests:**",
+        "- Clicking \"Listen → Whole paper\" starts audio < 2 s (fake TTS in tests), highlights the first sentence, skips the references, and the progress shows all sections.",
+        "- Typing \"پیپر پڑھ کر سناؤ\" in the Ask bar with Urdu selected starts the Urdu translated reading with an Urdu voice and RTL highlighting; \"read the summary\" reads the summary only.",
+        "- Navigating from Reader to Search keeps playing; reload restores the position; media keys work.",
+        "- Speed change does not restart audio; sleep timer stops playback; queue moves to the next item.",
+        "- A language without a voice never uses a wrong-language voice.",
+        "- Credits estimated, reserved, committed per chunk and refunded on stop.",
+        "- Screenshots of the mini-player and full sheet (light/dark, 1440/390, English/Urdu/Chinese) pass the visual gate."
+      ]
+    },
+    {
+      "part": "13",
+      "title": "LIBRARY AND PROJECTS",
+      "content": [
+        "- Sub-tabs: Projects, Saved papers, Collections, Notes & highlights, Citations, Tasks.",
+        "- Projects: a workspace grouping papers, notes, comparisons, insights, summaries, tasks; overview header with counts (papers, notes, comparisons, tasks); add from search with one click.",
+        "- Saved papers: tagging, bulk actions, filters, export citations; citations and collections.",
+        "- Notes and highlights organized by paper and project.",
+        "- Citation export in common styles (APA, IEEE, BibTeX…).",
+        "- Research memory: searches, notes, and AI conversations are remembered per project; the Ask bar can answer \"find papers related to the problem I worked on last semester\"."
+      ]
+    },
+    {
+      "part": "14",
+      "title": "COMPARE (PROTECTED) AND INSIGHTS",
+      "content": [
+        "- Compare is approved and protected (Part 1B): keep the flow upload PDFs → deep extraction → filled-header table → Insights exactly working; run the regression suite before/after any change.",
+        "- Existing scope to keep: upload 2–15 PDFs in a big central drop area; per-column evidence with confidence; default columns Method, Dataset, Model, Metric, Result, Limitation, Code available (Problem hidden); custom columns; per-cell evidence drawer; manual override; export CSV/XLSX/Markdown.",
+        "- Insights (sub-tabs Overview · Evidence · Methods & data · Reproducibility · Next steps), calm, never blank, every statement cited: Overview (takeaway hero, 3 key numbers, head-to-head chart, conflict card, \"More insights\" rows), Evidence (conflicts with supporting/opposing/mixed, agreements, consensus question), Methods & data (timeline, method families, trade-off chart, study design and datasets tables), Reproducibility (checklist with code/data/hyperparameters/details/pretrained/license, x/6), Next steps (limitations, opportunity signals with evidence levels, ideas to save, claim checker, exports).",
+        "- **Enhancements to add** (each with tests, without changing existing behavior): comparison in the user's language; saved comparisons (list, rename, duplicate, delete, reopen, share read-only link opt-in, add to project); add/remove PDFs reusing cached results; column templates and suggested columns; column-level actions (sort, filter, highlight best value, normalize units, \"explain this column\"); cell confidence and \"Needs review\" filter; exports CSV/XLSX/Markdown/PDF report; \"Draft related work from this comparison\" → Write; per-paper progress and streaming cells."
+      ]
+    },
+    {
+      "part": "15",
+      "title": "GAPS, TRENDS, RECOMMENDATIONS",
+      "content": [
+        "- **Gap signals:** scope = project, comparison or topic; facet extraction and normalization; signal generators (coverage, combinations, missing head-to-heads, repeated limitations, benchmark concentration, time trends); evidence levels; counts with the papers behind them; disclaimer; save, dismiss, \"already explored\", turn into idea.",
+        "- **Consensus:** research question → supporting/opposing/mixed/not addressed with study characteristics.",
+        "- **Trends:** publication growth, popular and emerging methods/datasets/models/keywords, clusters, citation trends over 5–10 years; charts in brand colors with a table view.",
+        "- **Datasets:** datasets for a task with papers, tasks, models, metrics, sample size, access and license.",
+        "- **Recommendations:** personalized papers with a reason line (same dataset / extends a saved paper / addresses a limitation you noted).",
+        "- **Alerts:** saved searches and topics alert on new papers/citations/datasets/retractions; in-app notifications and email digests through a transactional email provider behind an interface; unsubscribe links."
+      ]
+    },
+    {
+      "part": "16",
+      "title": "WRITE",
+      "content": [
+        "- **Sub-tabs: Reviews · Screening · Draft · Check claims.**",
+        "- Screening & PRISMA: import records; dedup; title/abstract and full-text screening (include/exclude/maybe, reasons, criteria, tags, notes); two independent reviewers with conflict resolution; automatic PRISMA counts and diagram export.",
+        "- Literature review builder: wizard Collect → Screen → Extract → Themes → Outline → Write → Export; topic clustering; evidence per theme; contradictions and gaps pulled in; editable outline; section-by-section grounded writing with citation nodes; \"Unsupported\" flags; coverage panel; version history.",
+        "- Draft: introduction, related work, abstract, research questions, proposal, conclusion; grounded only in selected papers; any language.",
+        "- Check claims: paste text → find claims → supporting/conflicting evidence → evidence strength → safer wording; also runs inside the editor.",
+        "- Rich-text editor with autosave, comments, word count; export DOCX, PDF, Markdown, LaTeX + .bib."
+      ]
+    },
+    {
+      "part": "17",
+      "title": "TEAMS AND COLLABORATION",
+      "content": [
+        "- Workspaces with members and roles (owner, admin, editor, viewer, supervisor); invites by email/link; seat management tied to the Team plan.",
+        "- Shared projects, libraries, comparisons, reviews; comments and @mentions; activity feed; notifications.",
+        "- Real-time presence or safe locking.",
+        "- Supervisor review mode: coverage view, comment threads, approve/request changes.",
+        "- Team usage pooled under the plan; audit log."
+      ]
+    },
+    {
+      "part": "18",
+      "title": "PUBLIC WEBSITE, MARKETING AND HELP",
+      "content": [
+        "- Landing page with hero and one clear value line; feature sections with real screenshots; languages supported; pricing teaser; FAQ; final CTA \"Start free\".",
+        "- Pages: Features, Pricing, About, Blog, Changelog, Help center, Contact, Status.",
+        "- Legal: Privacy Policy, Terms of Service, Cookie Policy (consent banner), Acceptable Use, Refund Policy, DPA template, Open-source notices — marked as templates for legal review.",
+        "- SEO: prerendering/meta/Open Graph/sitemap/robots/hreflang/structured data.",
+        "- Analytics: privacy-friendly, cookieless.",
+        "- Growth: referral credits, shareable public links (opt-in), waitlist/newsletter capture, onboarding emails."
+      ]
+    },

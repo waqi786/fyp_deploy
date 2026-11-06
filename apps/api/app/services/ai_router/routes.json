@@ -1,0 +1,54 @@
+{
+  "ui_translation": [
+    {"provider": "gemini", "model": "gemini-3.8-flash", "weight": 4, "max_input_chars": 12000},
+    {"provider": "groq", "model": "openai/gpt-oss-20b", "weight": 2, "max_input_chars": 12000},
+    {"provider": "openrouter", "model": "auto-qwen-free", "weight": 1, "language_weight": 3, "languages": ["zh-Hans", "zh-Hant", "ja", "ko", "vi", "th", "id", "ms", "fil"], "max_input_chars": 12000},
+    {"provider": "openrouter", "model": "auto-free", "weight": 1, "max_input_chars": 12000},
+    {"provider": "azure", "model": "translate", "weight": 1, "max_input_chars": 12000},
+    {"provider": "google_cloud", "model": "translate", "weight": 1, "max_input_chars": 12000},
+    {"provider": "deepl", "model": "translate", "weight": 1, "max_input_chars": 12000},
+    {"provider": "translator_local", "model": "translate", "weight": 1, "max_input_chars": 12000},
+    {"provider": "madlad", "model": "translate", "weight": 1, "max_input_chars": 12000}
+  ],
+  "short_translation": [
+    {"provider": "groq", "model": "openai/gpt-oss-20b", "weight": 3, "max_input_chars": 12000},
+    {"provider": "gemini", "model": "gemini-3.8-flash", "weight": 2, "max_input_chars": 12000},
+    {"provider": "openrouter", "model": "auto-qwen-free", "weight": 1, "language_weight": 3, "languages": ["zh-Hans", "zh-Hant", "ja", "ko", "vi", "th", "id", "ms", "fil"], "max_input_chars": 12000},
+    {"provider": "openrouter", "model": "auto-free", "weight": 1, "max_input_chars": 12000},
+    {"provider": "azure", "model": "translate", "weight": 1, "max_input_chars": 12000},
+    {"provider": "google_cloud", "model": "translate", "weight": 1, "max_input_chars": 12000},
+    {"provider": "deepl", "model": "translate", "weight": 1, "max_input_chars": 12000},
+    {"provider": "translator_local", "model": "translate", "weight": 1, "max_input_chars": 12000},
+    {"provider": "madlad", "model": "translate", "weight": 1, "max_input_chars": 12000}
+  ],
+  "long_translation": [
+    {"provider": "gemini", "model": "gemini-3.8-flash", "weight": 1, "max_input_chars": 50000},
+    {"provider": "groq", "model": "openai/gpt-oss-20b", "weight": 1, "max_input_chars": 50000},
+    {"provider": "openrouter", "model": "auto-qwen-free", "weight": 1, "language_weight": 2, "languages": ["zh-Hans", "zh-Hant", "ja", "ko", "vi", "th", "id", "ms", "fil"], "max_input_chars": 50000},
+    {"provider": "openrouter", "model": "auto-free", "weight": 1, "max_input_chars": 50000}
+  ],
+  "summary": [
+    {"provider": "groq", "model": "openai/gpt-oss-20b", "weight": 1, "max_input_chars": 50000},
+    {"provider": "gemini", "model": "gemini-3.8-flash", "weight": 1, "max_input_chars": 50000},
+    {"provider": "openrouter", "model": "auto-free", "weight": 1, "max_input_chars": 50000}
+  ],
+  "chat": [
+    {"provider": "groq", "model": "openai/gpt-oss-20b", "weight": 1, "max_input_chars": 50000},
+    {"provider": "gemini", "model": "gemini-3.8-flash", "weight": 1, "max_input_chars": 50000},
+    {"provider": "openrouter", "model": "auto-free", "weight": 1, "max_input_chars": 50000}
+  ],
+  "extraction": [
+    {"provider": "groq", "model": "openai/gpt-oss-20b", "weight": 1, "max_input_chars": 50000},
+    {"provider": "gemini", "model": "gemini-3.8-flash", "weight": 1, "max_input_chars": 50000}
+  ],
+  "judge": [
+    {"provider": "openrouter", "model": "auto-qwen-free-judge", "weight": 2, "max_input_chars": 30000},
+    {"provider": "openrouter", "model": "auto-free", "weight": 1, "max_input_chars": 30000},
+    {"provider": "groq", "model": "openai/gpt-oss-20b", "weight": 1, "max_input_chars": 30000}
+  ],
+  "qa_backtranslation": [
+    {"provider": "gemini", "model": "gemini-3.8-flash", "weight": 2, "max_input_chars": 20000},
+    {"provider": "groq", "model": "openai/gpt-oss-20b", "weight": 1, "max_input_chars": 20000},
+    {"provider": "openrouter", "model": "auto-free", "weight": 1, "max_input_chars": 20000}
+  ]
+}

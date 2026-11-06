@@ -1,0 +1,25 @@
+services:
+  api:
+    environment:
+      SELFHOSTED_TRANSLATOR_URL: http://translator:8090
+  translator:
+    build:
+      context: ./apps/translator
+    profiles: ["local-translation"]
+    environment:
+      MADLAD_MODEL_ID: ${MADLAD_MODEL_ID:-google/madlad400-3b-mt}
+      MADLAD_DEVICE: ${MADLAD_DEVICE:-cpu}
+      HF_HOME: /models/huggingface
+    volumes:
+      - madlad_models:/models/huggingface
+    expose:
+      - "8090"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8090/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 15m
+volumes:
+  madlad_models:

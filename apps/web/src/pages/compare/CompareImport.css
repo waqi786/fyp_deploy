@@ -1,0 +1,384 @@
+/* Compare: papers added from Search / Reader (import banner and "no free PDF" rows). Uses the app's --resora-* tokens. */
+.cmp-import-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto 16px;
+  max-width: 760px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  border: 1px solid var(--resora-border);
+  background: var(--resora-surface);
+  color: var(--resora-text);
+  font-weight: 600;
+}
+
+.cmp-spinner {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  border-radius: 999px;
+  border: 2px solid var(--resora-accent-soft);
+  border-top-color: var(--resora-accent);
+  animation: cmp-spin 0.8s linear infinite;
+}
+
+@keyframes cmp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cmp-missing {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cmp-missing-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px dashed var(--resora-border);
+  background: var(--resora-surface);
+}
+
+.cmp-missing-row > div {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.cmp-missing-row strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--resora-text);
+  font-size: 14px;
+}
+
+.cmp-missing-row small {
+  color: var(--resora-muted);
+  font-size: 12.5px;
+}
+
+.cmp-publisher-link {
+  width: fit-content;
+  margin-top: 4px;
+  color: var(--resora-accent);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cmp-missing-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 10px;
+  background: rgba(214, 141, 23, 0.14);
+  color: var(--resora-warning);
+  font-weight: 800;
+}
+
+.cmp-missing-upload,
+.cmp-missing-remove {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.cmp-missing-upload {
+  border: 0;
+  background: var(--resora-accent);
+  color: var(--resora-on-accent);
+}
+
+.cmp-missing-upload:disabled {
+  background: var(--resora-surface-2);
+  color: var(--resora-muted);
+  cursor: not-allowed;
+}
+
+.cmp-missing-remove {
+  border: 1px solid var(--resora-border);
+  background: transparent;
+  color: var(--resora-muted);
+}
+
+@media (max-width: 640px) {
+  .cmp-missing-row {
+    flex-wrap: wrap;
+  }
+
+  .cmp-missing-row > div {
+    flex-basis: calc(100% - 42px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cmp-spinner {
+    animation: none;
+  }
+}
+
+/* ---------- Saved comparisons ---------- */
+.cmp-saved {
+  max-width: 760px;
+  margin: 0 auto 18px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid var(--resora-border);
+  background: var(--resora-surface);
+  color: var(--resora-text);
+}
+
+.cmp-saved-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.cmp-saved-head .resora-label {
+  margin: 0;
+}
+
+.cmp-saved-new {
+  border: 0;
+  background: none;
+  color: var(--resora-accent);
+  font-weight: 700;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+
+.cmp-saved ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: min(340px, 50vh);
+  overflow-y: auto;
+}
+
+.cmp-saved li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+}
+
+.cmp-saved li.is-current {
+  border-color: var(--resora-accent-soft);
+  background: color-mix(in srgb, var(--resora-accent) 7%, transparent);
+}
+
+.cmp-saved-open {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  text-align: start;
+  border: 0;
+  background: none;
+  color: inherit;
+  padding: 6px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.cmp-saved-open:hover,
+.cmp-saved-action:hover,
+.cmp-saved-new:hover {
+  background: color-mix(in srgb, var(--resora-accent) 9%, transparent);
+}
+
+.cmp-saved-open strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cmp-saved-open small,
+.cmp-translated-note {
+  color: var(--resora-muted);
+}
+
+.cmp-saved-action {
+  flex: none;
+  border: 1px solid var(--resora-border);
+  background: transparent;
+  color: var(--resora-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.cmp-saved-action.is-danger {
+  border-color: #c4331b;
+  background: #c4331b;
+  color: #fff;
+}
+
+.cmp-saved-rename {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cmp-saved-rename input {
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--resora-border);
+  background: var(--resora-bg, transparent);
+  color: inherit;
+}
+
+.cmp-saved-rename button {
+  border: 1px solid var(--resora-border);
+  background: transparent;
+  color: inherit;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.cmp-saved-rename button[type="submit"] {
+  background: var(--resora-accent);
+  border-color: var(--resora-accent);
+  color: var(--resora-on-accent, #fff);
+}
+
+/* ---------- Column templates ---------- */
+.cmp-templates {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 12px 0 4px;
+}
+
+.cmp-templates > span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--resora-muted);
+  margin-inline-end: 4px;
+}
+
+.cmp-templates button {
+  border: 1px solid var(--resora-border);
+  background: transparent;
+  color: var(--resora-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.cmp-templates button:hover {
+  border-color: var(--resora-accent);
+}
+
+.cmp-templates button.is-on {
+  border-color: var(--resora-accent);
+  background: color-mix(in srgb, var(--resora-accent) 12%, transparent);
+  color: var(--resora-accent);
+}
+
+.cmp-templates.is-compact {
+  margin: 0;
+}
+
+.cmp-templates.is-compact > span {
+  flex-basis: 100%;
+}
+
+/* ---------- Translated content ---------- */
+.cmp-translate-toggle.is-on {
+  border-color: var(--resora-accent);
+  color: var(--resora-accent);
+}
+
+.cmp-translated-note {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+}
+
+.cmp-quote-translation {
+  border-inline-start-color: var(--resora-accent) !important;
+}
+
+/* Arrows that point "forward" follow the reading direction. */
+[dir="rtl"] .cmp-dir-arrow {
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
+@media (max-width: 640px) {
+  .cmp-saved li {
+    flex-wrap: wrap;
+  }
+
+  .cmp-saved-open {
+    flex-basis: 100%;
+  }
+}
+
+/* Arabic-script labels must not be letter-spaced or upper-cased (it breaks the joined letters). */
+.comparison-shell[dir="rtl"] .resora-label,
+.comparison-shell[dir="rtl"] .cmp-templates > span {
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
+
+.cmp-translate-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-inline-start: auto;
+  margin-inline-end: 12px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--resora-border);
+  background: var(--resora-surface);
+  color: var(--resora-text);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.cmp-translate-toggle > span {
+  font-size: 0.8rem;
+  color: var(--resora-accent);
+}
+
+.cmp-translate-toggle:disabled {
+  opacity: 0.65;
+  cursor: progress;
+}

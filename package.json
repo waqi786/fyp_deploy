@@ -1,0 +1,7 @@
+{
+  "name": "resora-fyp-advanced",
+  "private": true,
+  "scripts": {
+    "check:all": "npm --prefix apps/web run lint && npm --prefix apps/web run typecheck && npm --prefix apps/web run test:e2e && npm --prefix apps/web run build && python scripts/check_api.py"
+  }
+}

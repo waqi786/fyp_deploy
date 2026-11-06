@@ -1,0 +1,9 @@
+argostranslate>=1.11.0,<1.12
+fastapi>=0.115,<1
+uvicorn[standard]>=0.30,<1
+langdetect==1.0.9
+ctranslate2>=4.6,<5
+transformers>=4.45,<5
+sentencepiece>=0.2,<1
+sacremoses>=0.1.1,<1
+huggingface_hub>=0.26,<1
