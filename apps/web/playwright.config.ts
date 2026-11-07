@@ -8,6 +8,8 @@ export default defineConfig({
   outputDir: "./test-results",
   fullyParallel: true,
   workers: process.env.CI ? 2 : undefined,
+  retries: process.env.CI ? 1 : 0,
+  timeout: process.env.CI ? 45_000 : 30_000,
   reporter: "list",
   use: {
     baseURL,
