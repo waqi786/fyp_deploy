@@ -79,7 +79,7 @@ test("selecting Chinese searches in English and displays translated results", as
     requestBody = route.request().postDataJSON() as Record<string, unknown>;
     await route.fulfill({ status: 200, contentType: "text/event-stream", body: searchStream });
   });
-  await page.route("**/api/v1/library/save", (route) => route.fulfill({ json: { saved_items: [{ paper_id: paper.paper_id }], library_stats: {} } }));
+  await page.route("**/api/v1/library/items", (route) => route.fulfill({ json: { items: [{ id: "fixture-library-item", paper_key: paper.paper_id }], already_saved: [] } }));
   await page.goto("/search");
   await page.locator(".rs-language-pill").click();
   await page.locator('.rs-menu-item[lang="zh-Hans"]').click();
