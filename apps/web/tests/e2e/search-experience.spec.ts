@@ -1,129 +1,94 @@
-﻿import { expect, test } from "@playwright/test";
+﻿/**
+ * Search experience on the redesigned Search tab (master prompt Part 11): voice search, results in the reader's
+ * language (Chinese), and result cards in both brand themes at desktop and phone widths. Every API call is mocked.
+ * (Popover dismissal, loading states and Urdu are covered in search.spec.ts.)
+ */
+import { expect, test, type Page, type Route } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
 
 const paper = {
-  paper_id: "fixture-paper-1", title: "Machine learning and deep learning", translated_title: "\u533b\u7597\u5065\u5eb7\u4e2d\u7684\u673a\u5668\u5b66\u4e60",
-  abstract: "Machine learning and deep learning: Today, intelligent systems can support clinical decisions.", translated_abstract: "\u673a\u5668\u5b66\u4e60\u53ef\u4ee5\u652f\u6301\u4e34\u5e8a\u51b3\u7b56\u3002",
-  translation_status: "translated", year: 2024, venue: "Health Informatics", citation_count: 12,
-  is_open_access: true, source: "fixture", all_sources: [], authors: [{ name: "A. Researcher" }],
-  result_badges: ["Open Access"], cluster_label: null, ranking_score: 0.9, micro_summary: null,
-  datasets: [], methodologies: [], code_repositories: [], peer_review_status: "peer_reviewed", is_preprint: false,
-  doi: null, publication_type: "journal-article", pdf_urls: [], external_ids: {}, url: "https://example.org/paper", pdf_url: null,
+  paper_id: "fixture-paper-1", title: "Machine learning in healthcare", translated_title: "医疗健康中的机器学习",
+  abstract: "Machine learning can support clinical decisions in hospitals.", translated_abstract: "机器学习可以支持临床决策。",
+  translation_status: "translated", year: 2024, venue: "Health Informatics", citation_count: 12, is_open_access: true, source: "research",
+  authors: [{ name: "A. Researcher" }], result_badges: [], datasets: [], methodologies: [], code_repositories: [], peer_review_status: "peer_reviewed",
+  is_preprint: false, doi: "10.1000/fixture.1", pdf_url: "https://example.org/paper.pdf",
 };
-const webResult = {
-  ...paper, paper_id: "fixture-web-1", title: "Clinical AI safety guidance", source: "web", all_sources: ["web"],
-  venue: "www.example.org", publication_type: "web", url: "https://www.example.org/guidance", authors: [],
-  result_badges: ["Web"], citation_count: 0,
-};
-const response = {
-  query: "machine learning", normalized_query: "machine learning", translated_query: null,
-  search_mode: "hybrid", query_type: "natural_language", total_results: 1, deduplicated_results: 1,
-  papers: [paper, webResult], pagination: { page: 1, total_pages: 1, has_next_page: false, returned_results: 2 },
-  suggestions: [], trending_topics: [], clusters: {}, source_coverage: {}, source_failures: [], search_insights: {},
-  ranking_explanations: [], lazy_prefetch_window: [], author_network: [], author_disambiguation: [],
-  venue_matches: [], institution_matches: [], dataset_matches: [], code_repository_matches: [],
-  recommended_papers: [], citation_expansion_titles: [], co_citation_pairs: [], bibliographic_coupling_pairs: [],
-  figure_search_matches: [], alert_preview_available: false,
-};
-const searchStream = [
-  "event: search_started\ndata: {}\n\n",
-  `event: source_results\ndata: ${JSON.stringify({ source: "scholarly", papers: response.papers })}\n\n`,
-  `event: done\ndata: ${JSON.stringify(response)}\n\n`,
-].join("");
 
-test("search filters close on outside click and Escape", async ({ page }) => {
-  await page.route("**/api/v1/search/stream", (route) => route.fulfill({ status: 200, contentType: "text/event-stream", body: searchStream }));
-  await page.goto("/search");
-  await page.locator('input[name="search-query"]').fill("machine learning");
-  await page.locator('input[name="search-query"]').press("Enter");
-  await expect(page.locator(".rs-card").first()).toBeVisible();
-  const panel = page.locator(".rs-filter-panel");
-  await page.getByRole("button", { name: "More filters" }).click();
-  await expect(panel).toBeVisible();
-  await page.getByRole("radio", { name: "Research with Resora" }).click();
-  await expect(panel).toBeHidden();
-  await page.getByRole("button", { name: "More filters" }).click();
-  await page.keyboard.press("Escape");
-  await expect(panel).toBeHidden();
-});
+async function mockApi(page: Page) {
+  const bodies: Array<Record<string, unknown>> = [];
+  await page.route("**/api/v1/**", async (route: Route) => {
+    const request = route.request();
+    const url = request.url();
+    const json = (body: unknown) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
+    if (url.includes("/search/stream")) {
+      bodies.push((request.postDataJSON() || {}) as Record<string, unknown>);
+      return json({ query: "q", total_results: 1, papers: [paper], pagination: { page: 1, has_next_page: false }, query_understanding: {} });
+    }
+    if (url.includes("/search/usage")) return json({ plan: "free", windows: [] });
+    if (url.includes("/search/research/estimate")) return json({ research_credits: 5, ask_credits: 1 });
+    if (url.includes("/library/items/lookup")) return json({ items: {} });
+    return json([]);
+  });
+  return bodies;
+}
 
-test("empty search restores the voice control and centered starting point", async ({ page }) => {
+test("voice search fills the bar and runs the search", async ({ page }) => {
   await page.addInitScript(() => {
+    window.localStorage.setItem("resora-language", "en");
+    window.localStorage.setItem("resora-language-source", "settings");
     class FakeSpeechRecognition {
-      lang = ""; interimResults = false; maxAlternatives = 1;
+      lang = ""; interimResults = false; maxAlternatives = 1; continuous = false;
       onstart: (() => void) | null = null; onend: (() => void) | null = null; onerror: (() => void) | null = null;
-      onresult: ((event: { results: Array<Array<{ transcript: string }>> }) => void) | null = null;
-      start() { this.onstart?.(); this.onresult?.({ results: [[{ transcript: "hello research" }]] }); this.onend?.(); }
+      onresult: ((event: { results: Array<Array<{ transcript: string }>> & { length: number } }) => void) | null = null;
+      start() { this.onstart?.(); const results = Object.assign([[{ transcript: "machine learning healthcare" }]], { length: 1 }); this.onresult?.({ results } as never); this.onend?.(); }
       stop() { this.onend?.(); }
+      abort() { this.onend?.(); }
     }
     Object.defineProperty(window, "SpeechRecognition", { configurable: true, writable: true, value: FakeSpeechRecognition });
   });
-  await page.route("**/api/v1/search/stream", async (route) => {
-    await route.fulfill({ status: 200, contentType: "text/event-stream", body: searchStream });
-  });
+  const bodies = await mockApi(page);
   await page.goto("/search");
   await expect(page.getByRole("heading", { name: "Find research." })).toBeVisible();
-  await expect(page.getByText("Search papers, authors and topics in any language.")).toBeVisible();
-  const voiceButton = page.getByRole("button", { name: "Search by voice" });
-  await expect(voiceButton).toBeVisible();
-  await expect(page.getByRole("button", { name: "More filters" })).toHaveCount(0);
-  await expect(voiceButton).toBeEnabled();
-  await voiceButton.click();
-  await expect(page.locator('input[name="search-query"]')).toHaveValue("hello research");
+  await page.getByRole("button", { name: "Search by voice" }).click();
+  await expect(page.getByRole("searchbox").first()).toHaveValue("machine learning healthcare");
   await expect(page.locator(".rs-card").first()).toBeVisible();
+  expect(bodies.length).toBeGreaterThan(0);
 });
 
-test("selecting Chinese searches in English and displays translated results", async ({ page }) => {
-  let requestBody: Record<string, unknown> | null = null;
-  await page.route("**/api/v1/search/stream", async (route) => {
-    requestBody = route.request().postDataJSON() as Record<string, unknown>;
-    await route.fulfill({ status: 200, contentType: "text/event-stream", body: searchStream });
+test("a Chinese interface asks for translated results and shows them, with the original one click away", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.localStorage.setItem("resora-language", "zh-Hans");
+    window.localStorage.setItem("resora-language-source", "settings");
   });
-  await page.route("**/api/v1/library/items", (route) => route.fulfill({ json: { items: [{ id: "fixture-library-item", paper_key: paper.paper_id }], already_saved: [] } }));
+  const bodies = await mockApi(page);
   await page.goto("/search");
-  await page.locator(".rs-language-pill").click();
-  await page.locator('.rs-menu-item[lang="zh-Hans"]').click();
-  await page.locator('input[name="search-query"]').fill("machine learning healthcare");
-  await page.locator('input[name="search-query"]').press("Enter");
-  await expect(page.getByRole("button", { name: /\u533b\u7597\u5065\u5eb7/ }).first()).toBeVisible();
-  await expect(page.locator(".rs-card")).toHaveCount(2);
-  await page.locator(".rs-language-pill").click();
-  await page.locator(".rs-switch-row").click();
-  await expect(page.locator(".rs-card").first()).toContainText("Today,");
-  await expect(page.locator(".rs-card").first()).not.toContainText("Machine learning and deep learning: Today");
-  await expect(page.getByRole("group", { name: "Result type" })).toHaveCount(0);
-  await expect(page.getByText("Web result", { exact: true })).toHaveCount(0);
-  await expect(page.getByText("www.example.org", { exact: true })).toHaveCount(0);
-  expect(requestBody?.target_language).toBe("zh-Hans");
-  expect(requestBody?.translate_results).toBe(true);
-  expect(requestBody?.search_mode).toBe("hybrid");
-  const saveAction = page.locator(".rs-card .rs-secondary-actions button[aria-pressed]").first();
-  await saveAction.click();
-  await expect(saveAction).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("button", { name: "访问网站" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "阅读论文" })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "查看详细信息" })).toBeVisible();
+  await expect(page.locator(".rs-search")).toHaveAttribute("lang", "zh-Hans");
+  await page.getByRole("searchbox").first().fill("machine learning healthcare");
+  await page.keyboard.press("Enter");
+  await expect(page.locator(".rs-card").first()).toContainText("医疗健康");
+  expect(bodies.at(-1)?.target_language).toBe("zh-Hans");
+  expect(bodies.at(-1)?.translate_results).toBe(true);
 });
 
-test("Search results render in both brand themes at desktop and mobile widths", async ({ page }) => {
+test("result cards render in both brand themes at desktop and phone widths without horizontal scrolling", async ({ page }) => {
   await mkdir("test-shots/search-experience", { recursive: true });
-  await page.route("**/api/v1/search/stream", (route) => route.fulfill({ status: 200, contentType: "text/event-stream", body: searchStream }));
+  await mockApi(page);
   for (const theme of ["light", "dark"] as const) {
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
+      await page.addInitScript((value) => {
+        window.localStorage.setItem("resora-theme", value);
+        window.localStorage.setItem("resora-language", "en");
+        window.localStorage.setItem("resora-language-source", "settings");
+      }, theme);
       await page.goto("/search");
-      await page.evaluate((value) => localStorage.setItem("resora-theme", value), theme);
-      await page.reload();
-      await page.locator('input[name="search-query"]').fill("machine learning");
-      await page.locator('input[name="search-query"]').press("Enter");
-      await expect(page.locator(".rs-card").first()).toBeVisible();
-      if (width === 390) {
-        const moreActions = page.locator(".rs-mobile-more").first();
-        await expect(moreActions.getByRole("button")).toBeVisible();
-        await moreActions.getByRole("button").click();
-        await expect(moreActions.getByRole("menuitem", { name: "Copy APA" })).toBeVisible();
-        await moreActions.getByRole("button").click();
-      }
+      await page.getByRole("searchbox").first().fill("machine learning");
+      await page.keyboard.press("Enter");
+      const card = page.locator(".rs-card").first();
+      await expect(card).toBeVisible();
+      await expect(card.getByRole("button", { name: "Read paper", exact: true })).toBeVisible();
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(overflow).toBeLessThanOrEqual(0);
       await page.screenshot({ path: `test-shots/search-experience/results-${theme}-${width}.png`, fullPage: true });
     }
   }

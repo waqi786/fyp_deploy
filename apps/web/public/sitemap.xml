@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Replace https://resora.example with your public domain (also in robots.txt and VITE_PUBLIC_SITE_URL). -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://resora.example/welcome</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://resora.example/welcome?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ur" href="https://resora.example/welcome?lang=ur" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://resora.example/welcome" />
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://resora.example/features</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://resora.example/features?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ur" href="https://resora.example/features?lang=ur" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://resora.example/features" />
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://resora.example/pricing</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://resora.example/pricing?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ur" href="https://resora.example/pricing?lang=ur" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://resora.example/pricing" />
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://resora.example/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://resora.example/about?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ur" href="https://resora.example/about?lang=ur" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://resora.example/about" />
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://resora.example/help</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://resora.example/help?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ur" href="https://resora.example/help?lang=ur" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://resora.example/help" />
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://resora.example/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://resora.example/contact?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ur" href="https://resora.example/contact?lang=ur" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://resora.example/contact" />
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://resora.example/status</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://resora.example/status?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ur" href="https://resora.example/status?lang=ur" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://resora.example/status" />
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://resora.example/changelog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://resora.example/changelog?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ur" href="https://resora.example/changelog?lang=ur" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://resora.example/changelog" />
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://resora.example/legal/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://resora.example/legal/privacy?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ur" href="https://resora.example/legal/privacy?lang=ur" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://resora.example/legal/privacy" />
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://resora.example/legal/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://resora.example/legal/terms?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ur" href="https://resora.example/legal/terms?lang=ur" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://resora.example/legal/terms" />
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://resora.example/legal/cookies</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://resora.example/legal/cookies?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ur" href="https://resora.example/legal/cookies?lang=ur" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://resora.example/legal/cookies" />
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://resora.example/legal/acceptable-use</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://resora.example/legal/acceptable-use?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ur" href="https://resora.example/legal/acceptable-use?lang=ur" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://resora.example/legal/acceptable-use" />
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://resora.example/legal/refunds</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://resora.example/legal/refunds?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ur" href="https://resora.example/legal/refunds?lang=ur" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://resora.example/legal/refunds" />
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://resora.example/legal/dpa</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://resora.example/legal/dpa?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ur" href="https://resora.example/legal/dpa?lang=ur" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://resora.example/legal/dpa" />
+    <changefreq>weekly</changefreq>
+  </url>
+</urlset>

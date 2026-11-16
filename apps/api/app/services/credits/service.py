@@ -42,7 +42,39 @@ DEFAULT_ACTION_COSTS: dict[str, int] = {
     "summary": 2,
     "chat": 1,
     "translate_pages": 1,  # one call translates up to 5 pages
+    "listen_neural": 1,  # per started minute of neural speech (LISTEN_NEURAL_CREDITS_PER_MINUTE)
 }
+
+
+# ---------------------------------------------------------------------------- billing hooks
+# Billing (app.services.billing) registers these so plans and purchased credit packs apply everywhere credits are
+# used, without every endpoint knowing about subscriptions.
+#   resolver(user_key, plan) -> (effective_plan, effective_key, multiplier)  e.g. a team pools usage on "team:<id>"
+#   topup.consume(user_key, amount, reservation_id) -> bool, topup.adjust(reservation_id, final_amount),
+#   topup.balance(user_key) -> int
+_plan_resolver = None
+_topup_hooks = None
+
+
+def set_plan_resolver(resolver) -> None:  # noqa: ANN001
+    global _plan_resolver
+    _plan_resolver = resolver
+
+
+def set_topup_hooks(hooks) -> None:  # noqa: ANN001
+    global _topup_hooks
+    _topup_hooks = hooks
+
+
+def _resolve(user_key: str, plan: str) -> tuple[str, str, int]:
+    if _plan_resolver is None:
+        return plan, user_key, 1
+    try:
+        effective_plan, effective_key, multiplier = _plan_resolver(user_key, plan)
+        return effective_plan or plan, effective_key or user_key, max(1, int(multiplier or 1))
+    except Exception:  # noqa: BLE001 - billing problems must never block research actions
+        logger.exception("plan resolver failed; using the request plan")
+        return plan, user_key, 1
 
 
 class CreditLimitReached(Exception):
@@ -136,8 +168,8 @@ class CreditService:
         ).fetchone()
         return int(row[0] or 0), row[1]
 
-    def _windows(self, connection: sqlite3.Connection, user_key: str, plan: str, now: float) -> list[WindowUsage]:
-        limits = self.limits(plan)
+    def _windows(self, connection: sqlite3.Connection, user_key: str, plan: str, now: float, multiplier: int = 1) -> list[WindowUsage]:
+        limits = {scope: int(value) * multiplier for scope, value in self.limits(plan).items()}
         session_used, session_oldest = self._counted_sum(connection, user_key, now - SESSION_SECONDS, now)
         week_used, week_oldest = self._counted_sum(connection, user_key, now - WEEK_SECONDS, now)
         month_start, month_end = _month_bounds(now)
@@ -151,25 +183,56 @@ class CreditService:
     # ------------------------------------------------------------------ public API
 
     def usage(self, user_key: str, plan: str = "free") -> dict[str, object]:
+        plan, key, multiplier = _resolve(user_key, plan)
         now = time.time()
         with self._lock, self._connect() as connection:
-            windows = self._windows(connection, user_key, plan, now)
-        return {"plan": plan, "windows": [window.as_dict() for window in windows]}
+            windows = self._windows(connection, key, plan, now, multiplier)
+        balance = 0
+        if _topup_hooks is not None:
+            try:
+                balance = int(_topup_hooks.balance(user_key))
+            except Exception:  # noqa: BLE001
+                balance = 0
+        return {"plan": plan, "pooled": key != user_key, "windows": [window.as_dict() for window in windows], "topup_balance": balance}
+
+    def history(self, user_key: str, since: float, plan: str = "free") -> list[dict[str, object]]:
+        """Committed credits per UTC day and action (for the usage page). Pooled team usage is reported as a whole."""
+        _, key, _ = _resolve(user_key, plan)
+        with self._lock, self._connect() as connection:
+            rows = connection.execute(
+                "SELECT action, amount, created_at, status FROM credit_events WHERE user_key IN (?, ?) AND created_at >= ?"
+                " AND status IN ('committed', 'topup')",
+                (key, user_key, since),
+            ).fetchall()
+        buckets: dict[tuple[str, str], int] = {}
+        for action, amount, created_at, status in rows:
+            day = datetime.fromtimestamp(created_at, tz=timezone.utc).date().isoformat()
+            bucket = (day, action)
+            buckets[bucket] = buckets.get(bucket, 0) + int(amount)
+        return [{"day": day, "action": action, "credits": credits} for (day, action), credits in sorted(buckets.items())]
 
     def reserve(self, user_key: str, action: str, amount: int | None = None, plan: str = "free") -> str | None:
         """Hold credits for an action. Returns None for free actions. Raises CreditLimitReached."""
         amount = self.cost(action) if amount is None else max(0, int(amount))
         if amount == 0:
             return None
+        plan, key, multiplier = _resolve(user_key, plan)
         now = time.time()
         reservation_id = uuid.uuid4().hex
         with self._lock, self._connect() as connection:
-            for window in self._windows(connection, user_key, plan, now):
+            for window in self._windows(connection, key, plan, now, multiplier):
                 if window.limit and window.used + amount > window.limit:
+                    # Purchased credit packs are used only when a plan window is exhausted; they never expire.
+                    if _topup_hooks is not None and _topup_hooks.consume(user_key, amount, reservation_id):
+                        connection.execute(
+                            "INSERT INTO credit_events (id, user_key, action, amount, status, created_at, updated_at) VALUES (?, ?, ?, ?, 'topup', ?, ?)",
+                            (reservation_id, user_key, action, amount, now, now),
+                        )
+                        return reservation_id
                     raise CreditLimitReached(window.scope, window.resets_at)
             connection.execute(
                 "INSERT INTO credit_events (id, user_key, action, amount, status, created_at, updated_at) VALUES (?, ?, ?, ?, 'reserved', ?, ?)",
-                (reservation_id, user_key, action, amount, now, now),
+                (reservation_id, key, action, amount, now, now),
             )
         return reservation_id
 
@@ -177,6 +240,8 @@ class CreditService:
         """Charge a reservation (optionally a smaller final amount, e.g. 0 for a cached answer)."""
         if not reservation_id:
             return
+        if amount is not None and _topup_hooks is not None:
+            _topup_hooks.adjust(reservation_id, max(0, int(amount)))
         with self._lock, self._connect() as connection:
             if amount is None:
                 connection.execute("UPDATE credit_events SET status = 'committed', updated_at = ? WHERE id = ? AND status = 'reserved'", (time.time(), reservation_id))
@@ -189,7 +254,10 @@ class CreditService:
     def refund(self, reservation_id: str | None) -> None:
         if not reservation_id:
             return
+        if _topup_hooks is not None:
+            _topup_hooks.adjust(reservation_id, 0)
         with self._lock, self._connect() as connection:
+            connection.execute("UPDATE credit_events SET status = 'topup_refunded', updated_at = ? WHERE id = ? AND status = 'topup'", (time.time(), reservation_id))
             connection.execute("UPDATE credit_events SET status = 'refunded', updated_at = ? WHERE id = ? AND status = 'reserved'", (time.time(), reservation_id))
 
 

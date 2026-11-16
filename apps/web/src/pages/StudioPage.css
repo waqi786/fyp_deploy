@@ -1,0 +1,89 @@
+/* LaTeX Studio — same tokens as the app; three panes on desktop (files · editor · PDF), stacked on phones. */
+.stu-page .lb-shell { max-width: 1680px; }
+.stu-new { display: grid; gap: 14px; }
+.stu-import { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--rs-border); }
+.stu-import h3 { margin: 0 0 4px; font-size: 16px; color: var(--rs-text); }
+.stu-draft-list, .stu-project-list { display: grid; gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; }
+.stu-draft-list li, .stu-project-list li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px; border: 1px solid var(--rs-border); border-radius: 12px; background: var(--rs-surface); }
+.stu-project-list a { color: var(--rs-text); font-weight: 700; text-decoration: none; }
+.stu-project-list a:hover { color: var(--rs-accent-ink); text-decoration: underline; }
+
+.stu-workspace { display: grid; gap: 12px; }
+.stu-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 14px; border: 1px solid var(--rs-border); border-radius: 14px; background: var(--rs-surface); }
+.stu-title { min-width: 0; max-width: 360px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--rs-text); }
+.stu-save { font-size: 12.5px; color: var(--rs-muted); }
+.stu-save.is-conflict { color: var(--rs-danger); font-weight: 700; }
+.stu-save.is-dirty { color: var(--rs-accent-ink); }
+.stu-toolbar-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-inline-start: auto; }
+.stu-dropdown { position: relative; }
+.stu-dropdown summary { list-style: none; cursor: pointer; }
+.stu-dropdown summary::-webkit-details-marker { display: none; }
+.stu-dropdown-menu { position: absolute; z-index: 20; top: calc(100% + 6px); inset-inline-end: 0; display: grid; gap: 2px; min-width: 240px; padding: 8px; border: 1px solid var(--rs-border); border-radius: 14px; background: var(--rs-surface); box-shadow: var(--rs-shadow-pop); }
+.stu-dropdown-menu p { margin: 2px 6px 6px; }
+.stu-dropdown-menu button { padding: 8px 10px; border: 0; border-radius: 10px; background: none; color: var(--rs-text); font: inherit; font-size: 13.5px; text-align: start; cursor: pointer; }
+.stu-dropdown-menu button:hover, .stu-dropdown-menu button[aria-checked="true"] { background: var(--rs-accent-soft); color: var(--rs-accent-ink); }
+.stu-dropdown-menu button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.stu-grid { display: grid; grid-template-columns: 220px minmax(0, 1.15fr) minmax(0, 1fr); gap: 12px; min-height: 70vh; }
+.stu-files, .stu-editor, .stu-output { min-width: 0; border: 1px solid var(--rs-border); border-radius: 14px; background: var(--rs-surface); }
+.stu-files { display: grid; align-content: start; gap: 8px; padding: 12px; }
+.stu-files h2, .stu-history h2 { margin: 0; font-size: 13px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; color: var(--rs-muted); }
+.stu-files ul { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.stu-files li { display: flex; align-items: center; border-radius: 9px; }
+.stu-files li.is-active { background: var(--rs-accent-soft); }
+.stu-files li > button:first-child { display: flex; flex: 1; align-items: center; gap: 8px; min-width: 0; padding: 6px 8px; border: 0; background: none; color: var(--rs-text); font: inherit; font-size: 13px; text-align: start; cursor: pointer; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.stu-file-icon { flex: none; width: 10px; height: 12px; border-radius: 2px; background: var(--rs-accent-line); }
+.stu-file-icon.is-binary { background: var(--rs-muted); border-radius: 50%; width: 10px; height: 10px; }
+.stu-file-delete { padding: 0 8px; border: 0; background: none; color: var(--rs-muted); font-size: 16px; cursor: pointer; }
+.stu-file-delete:hover { color: var(--rs-danger); }
+.stu-upload { position: relative; display: grid; place-items: center; min-height: 64px; padding: 10px; border: 1px dashed var(--rs-accent-line); border-radius: 12px; color: var(--rs-accent-ink); font-size: 13px; font-weight: 700; text-align: center; cursor: pointer; }
+.stu-upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.stu-new-file { display: flex; gap: 6px; }
+.stu-new-file .lb-input { flex: 1; min-width: 0; min-height: 34px; padding: 6px 10px; }
+
+.stu-editor { display: grid; grid-template-rows: auto auto 1fr; overflow: hidden; }
+.stu-snippets { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px; border-bottom: 1px solid var(--rs-border); }
+.stu-snippets button { height: 28px; padding: 0 10px; border: 1px solid var(--rs-border); border-radius: 999px; background: var(--rs-surface); color: var(--rs-text); font: inherit; font-size: 12.5px; cursor: pointer; }
+.stu-snippets button:hover { border-color: var(--rs-accent-line); color: var(--rs-accent-ink); }
+.stu-conflict { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px; background: var(--rs-danger-soft); color: var(--rs-danger); }
+.stu-conflict p { margin: 0; flex: 1; font-weight: 650; }
+.stu-code { display: grid; grid-template-columns: auto 1fr; min-height: 0; height: 100%; }
+.stu-gutter-wrap { overflow: hidden; background: var(--rs-surface-2); border-inline-end: 1px solid var(--rs-border); }
+.stu-gutter { display: grid; padding: 12px 0; font: 13px/20px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--rs-faint); text-align: end; user-select: none; }
+.stu-gutter span { padding: 0 10px 0 12px; cursor: pointer; }
+.stu-gutter span.is-error { background: var(--rs-danger-soft); color: var(--rs-danger); font-weight: 800; }
+.stu-code textarea { min-height: 60vh; height: 100%; padding: 12px; border: 0; outline: none; resize: none; background: var(--rs-surface); color: var(--rs-text); font: 13px/20px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; tab-size: 2; white-space: pre; overflow: auto; direction: ltr; text-align: left; }
+.stu-code textarea:focus-visible { box-shadow: inset var(--rs-focus); }
+
+.stu-output { display: grid; grid-template-rows: auto 1fr; overflow: hidden; }
+.stu-result { margin: 10px; padding: 10px 12px; border-radius: 12px; font-size: 13.5px; }
+.stu-result.is-ok { background: var(--rs-accent-soft); color: var(--rs-accent-ink); }
+.stu-result.is-error { background: var(--rs-danger-soft); color: var(--rs-danger); }
+.stu-result p { margin: 4px 0 0; }
+.stu-errors, .stu-warnings { display: grid; gap: 4px; margin: 8px 0 0; padding: 0; list-style: none; }
+.stu-errors button { width: 100%; padding: 6px 8px; border: 0; border-radius: 8px; background: rgba(0, 0, 0, 0.04); color: inherit; font: inherit; font-size: 12.5px; text-align: start; cursor: pointer; }
+.stu-warnings li { color: var(--rs-muted); font-size: 12px; }
+.stu-pdf, .stu-image-preview iframe { width: 100%; height: 100%; min-height: 60vh; border: 0; background: #fff; }
+.stu-image-preview { display: grid; gap: 8px; margin: 10px; }
+.stu-image-preview img { max-width: 100%; max-height: 50vh; object-fit: contain; border: 1px solid var(--rs-border); border-radius: 10px; background: #fff; }
+.stu-image-preview code { overflow-wrap: anywhere; font-size: 12px; color: var(--rs-muted); }
+.stu-output .pf-empty { margin: 10px; }
+.stu-history { display: grid; align-content: start; gap: 10px; padding: 12px; }
+.stu-history ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.stu-history li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; border: 1px solid var(--rs-border); border-radius: 10px; font-size: 13px; }
+.stu-danger { margin: 0; text-align: end; }
+
+@media (max-width: 1180px) {
+  .stu-grid { grid-template-columns: 200px minmax(0, 1fr); }
+  .stu-output { grid-column: 1 / -1; min-height: 60vh; }
+}
+@media (max-width: 760px) {
+  .stu-grid { grid-template-columns: 1fr; }
+  .stu-code textarea { min-height: 50vh; }
+  .stu-title { max-width: 100%; flex-basis: 100%; }
+  .stu-toolbar-actions { margin-inline-start: 0; }
+}
+.stu-files { overflow: hidden; }
+.stu-files > * { min-width: 0; max-width: 100%; box-sizing: border-box; }
+.stu-upload, .stu-new-file { width: 100%; box-sizing: border-box; }
+.stu-new-file .lb-input { width: 100%; box-sizing: border-box; }

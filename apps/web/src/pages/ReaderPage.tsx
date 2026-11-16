@@ -24,7 +24,9 @@ import {
   readRecent,
   rememberRecent,
 } from "./reader/readerApi";
-import { useSpeech } from "./reader/useSpeech";
+import { useReaderListen } from "../listen/useReaderListen";
+import { ListenMenuButton } from "../listen/MiniPlayer";
+import { detectListenIntent } from "../listen/intent";
 import { CompareTrayBar } from "./compare/CompareTrayBar";
 import { toggleTray, useTray } from "./compare/compareTray";
 import { libraryApi, type PaperInput } from "./library/libraryApi";
@@ -329,12 +331,12 @@ function ReaderWorkspace({ docId, language, t }: { docId: string; language: stri
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
   const narrow = useIsNarrow();
-  const speech = useSpeech();
   const trayItems = useTray();
   const viewerRef = useRef<PdfViewerHandle | null>(null);
   const textRef = useRef<HTMLDivElement | null>(null);
 
   const [document, setDocument] = useState<ReaderDocument | null>(null);
+  const speech = useReaderListen(document);
   const [loadError, setLoadError] = useState<string>("");
   const [libraryId, setLibraryId] = useState<string | null>(null);
   const [savingToLibrary, setSavingToLibrary] = useState(false);
@@ -417,7 +419,7 @@ function ReaderWorkspace({ docId, language, t }: { docId: string; language: stri
     }
   }, [darkPages]);
 
-  useEffect(() => () => speech.stop(), [speech.stop]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Listening keeps going when the user leaves the Reader (global player); nothing to stop on unmount.
 
   const goToPage = useCallback((page: number) => {
     if (!document) return;
@@ -457,11 +459,31 @@ function ReaderWorkspace({ docId, language, t }: { docId: string; language: stri
     setSelection({ text, x: rect.left + rect.width / 2, y: rect.top });
   }
 
-  const listenPaper = useCallback(() => {
-    const texts = pages.slice(currentPage - 1).filter((text) => text.trim());
+  const listenPaper = useCallback((fromPage = 1) => {
+    const texts = pages.slice(Math.max(0, fromPage - 1)).filter((text) => text.trim());
     if (!texts.length) return;
     if (!speech.speak("paper", texts, guessLanguage(texts[0]))) setNotice(t("readerNoVoice"));
-  }, [currentPage, pages, speech, t]);
+  }, [pages, speech, t]);
+
+  // The Summary tab owns the summary text: it reads it (creating it first when needed) when it sees this request.
+  const [listenRequest, setListenRequest] = useState<{ target: "summary" | "key_points"; id: number } | null>(null);
+  const listenSummary = useCallback((target: "summary" | "key_points") => {
+    setTab("summary");
+    setListenRequest({ target, id: Date.now() });
+  }, [setTab]);
+
+  // "L" starts the paper when nothing is playing (the global player handles L as play/pause afterwards).
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (speech.listen.item || (event.key !== "l" && event.key !== "L") || event.metaKey || event.ctrlKey || event.altKey) return;
+      if (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return;
+      event.preventDefault();
+      listenPaper(1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [listenPaper, speech.listen.item]);
 
   // Chat state lives here so Figures / selection can send questions to it.
   const [chat, setChat] = useState<ChatMessage[]>([]);
@@ -471,6 +493,18 @@ function ReaderWorkspace({ docId, language, t }: { docId: string; language: stri
   const ask = useCallback(async (question: string) => {
     const text = question.trim();
     if (!text || chatBusy || !document) return;
+    // "Read this paper aloud", "خلاصہ سناؤ", "把这篇论文读给我听" … start the player instead of asking the AI.
+    const intent = detectListenIntent(text);
+    if (intent) {
+      if (intent.action === "play") {
+        if (intent.target === "summary" || intent.target === "key_points") listenSummary(intent.target);
+        else listenPaper(intent.target === "section" ? currentPage : 1);
+      } else if (intent.action === "pause") speech.pause();
+      else if (intent.action === "resume") speech.resume();
+      else if (intent.action === "stop") speech.listen.stop();
+      else speech.listen.section(intent.action === "next_section" ? 1 : -1);
+      return;
+    }
     setTab("chat");
     const id = ++chatCounter.current;
     setChat((items) => [...items, { id, role: "user", text }]);
@@ -483,7 +517,7 @@ function ReaderWorkspace({ docId, language, t }: { docId: string; language: stri
     } finally {
       setChatBusy(false);
     }
-  }, [chatBusy, document, language, setTab, t]);
+  }, [chatBusy, currentPage, document, language, listenPaper, listenSummary, setTab, speech, t]);
 
   if (loadError) {
     return (
@@ -562,6 +596,9 @@ function ReaderWorkspace({ docId, language, t }: { docId: string; language: stri
         </div>
       ) : null}
 
+      {speech.activeId === "paper" && speech.listen.currentSentence && speech.listen.settings.autoScroll ? (
+        <p className="ls-follow" aria-live="off"><small>{t("lisNowReading")}</small><bdi>{speech.listen.currentSentence}</bdi></p>
+      ) : null}
       {usePdf ? (
         <PdfViewer
           ref={viewerRef}
@@ -602,6 +639,10 @@ function ReaderWorkspace({ docId, language, t }: { docId: string; language: stri
             void ask(t("readerSelectionPrompt", { text: selection.text.slice(0, 600) }));
             setSelection(null);
           }}>{t("readerSelectionExplain")}</button>
+          <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => {
+            if (!speech.speak("selection", [selection.text], guessLanguage(selection.text))) setNotice(t("readerNoVoice"));
+            setSelection(null);
+          }}>{t("lisListenSelection")}</button>
         </div>
       ) : null}
     </div>
@@ -620,7 +661,7 @@ function ReaderWorkspace({ docId, language, t }: { docId: string; language: stri
       ) : null}
       <div className="rd-panel-body">
         {tab === "summary" ? (
-          <SummaryTab document={document} language={language} t={t} cost={credits.summary} autoRun={params.get("auto") === "1"} goToPage={goToPage} speech={speech} onNoVoice={() => setNotice(t("readerNoVoice"))} showToast={showToast} />
+          <SummaryTab document={document} language={language} t={t} cost={credits.summary} autoRun={params.get("auto") === "1"} goToPage={goToPage} speech={speech} onNoVoice={() => setNotice(t("readerNoVoice"))} showToast={showToast} listenRequest={listenRequest} onListenHandled={() => setListenRequest(null)} />
         ) : null}
         {tab === "chat" ? <ChatTab messages={chat} busy={chatBusy} onAsk={ask} t={t} cost={credits.chat} goToPage={goToPage} isAbstract={document.source === "abstract"} /> : null}
         {tab === "figures" ? <FiguresTab document={document} t={t} goToPage={goToPage} onExplain={(label) => void ask(t("readerExplainPrompt", { item: label }))} /> : null}
@@ -645,7 +686,20 @@ function ReaderWorkspace({ docId, language, t }: { docId: string; language: stri
           </div>
         </div>
         <div className="rd-head-actions">
-          <ListenControl speech={speech} id="paper" label={t("readerListen")} t={t} onStart={listenPaper} disabled={!pages.some((text) => text.trim())} />
+          {speech.activeId === "paper" && speech.state !== "idle" ? (
+            <ListenControl speech={speech} id="paper" label={t("readerListen")} t={t} onStart={() => listenPaper(1)} />
+          ) : (
+            <ListenMenuButton t={t} disabled={!pages.some((text) => text.trim())} options={[
+              { key: "paper", label: t("lisWholePaper"), onSelect: () => listenPaper(1) },
+              { key: "here", label: t("lisFromHere"), onSelect: () => listenPaper(currentPage) },
+              { key: "summary", label: t("lisSummary"), onSelect: () => listenSummary("summary") },
+              { key: "points", label: t("lisKeyPoints"), onSelect: () => listenSummary("key_points") },
+              { key: "later", label: t("lisListenLater"), onSelect: () => {
+                void speech.listen.enqueue({ id: `${document.id}:paper`, kind: "paper", title: document.title, language: guessLanguage(pages.find((text) => text.trim()) || ""), href: `/reader/${document.id}`, source: { texts: pages.filter((text) => text.trim()), authors: document.authors } });
+                showToast(t("lisAddedToQueue"));
+              } },
+            ]} />
+          )}
           <button
             type="button"
             className={`rd-button rd-button-quiet${inCompare ? " is-on" : ""}`}
@@ -746,7 +800,7 @@ function highlight(text: string, needle: string): ReactNode {
 /*  Listen control                                                            */
 /* ========================================================================== */
 
-type Speech = ReturnType<typeof useSpeech>;
+type Speech = ReturnType<typeof useReaderListen>;
 
 function ListenControl({ speech, id, label, t, onStart, disabled }: { speech: Speech; id: string; label: string; t: T; onStart: () => void; disabled?: boolean }) {
   if (!speech.supported) return null;
@@ -797,7 +851,7 @@ function PageChips({ pages, t, goToPage }: { pages: number[]; t: T; goToPage: (p
   );
 }
 
-function SummaryTab({ document, language, t, cost, autoRun, goToPage, speech, onNoVoice, showToast }: {
+function SummaryTab({ document, language, t, cost, autoRun, goToPage, speech, onNoVoice, showToast, listenRequest, onListenHandled }: {
   document: ReaderDocument;
   language: string;
   t: T;
@@ -807,6 +861,8 @@ function SummaryTab({ document, language, t, cost, autoRun, goToPage, speech, on
   speech: Speech;
   onNoVoice: () => void;
   showToast: (message: string) => void;
+  listenRequest: { target: "summary" | "key_points"; id: number } | null;
+  onListenHandled: () => void;
 }) {
   const [level, setLevel] = useState<Level>(() => {
     try {
@@ -858,6 +914,26 @@ function SummaryTab({ document, language, t, cost, autoRun, goToPage, speech, on
 
   const sectionEntries = summary ? Object.entries(summary.sections).filter(([key, point]) => SECTION_LABELS[key] && point.text) : [];
   const speakable = summary ? [summary.tldr.text, ...summary.key_points.map((point) => point.text), ...sectionEntries.map(([key, point]) => `${t(SECTION_LABELS[key])}. ${point.text}`)] : [];
+  const keyPoints = summary ? summary.key_points.map((point) => point.text) : [];
+
+  // "Listen → Summary / Key points" from the toolbar or the chat ("read the summary"). Asking to hear a summary
+  // that does not exist yet creates it first (the normal summary cost), then reads it.
+  const requestedRun = useRef<number | null>(null);
+  useEffect(() => {
+    if (!listenRequest) return;
+    if (summary) {
+      onListenHandled();
+      const keyOnly = listenRequest.target === "key_points";
+      if (!speech.speak(keyOnly ? "key_points" : "summary", keyOnly ? keyPoints : speakable, language)) onNoVoice();
+      return;
+    }
+    if (!loading && requestedRun.current !== listenRequest.id) {
+      requestedRun.current = listenRequest.id;
+      void run(level);
+    } else if (!loading && error) {
+      onListenHandled();
+    }
+  }, [listenRequest, summary, loading, error]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function copySummary() {
     if (!summary) return;

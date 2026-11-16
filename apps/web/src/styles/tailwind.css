@@ -11226,10 +11226,10 @@ body[data-theme="light"] .resora-tab-nav a.active { color: #fff; }
   .resora-topbar { grid-template-columns: 1fr auto; min-height: 64px; padding: 8px 14px; }
   .resora-tab-nav { display: none; }
   .mobile-bottom-nav { position: fixed; inset-inline: 0; bottom: 0; z-index: 110; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); min-height: calc(60px + env(safe-area-inset-bottom)); padding: 5px 6px env(safe-area-inset-bottom); border-top: 1px solid var(--border); background: var(--ink); }
-  .mobile-bottom-nav > a, .mobile-more-wrap > button { display: grid; min-width: 0; min-height: 44px; place-items: center; border: 0; border-radius: 12px; background: transparent; color: var(--text-dim); font: 600 10px/1 theme("fontFamily.sans"); text-decoration: none; white-space: nowrap; }
-  .mobile-bottom-nav > a.active { background: var(--gold-soft); color: var(--gold-text); }
-  .mobile-more-wrap { position: relative; display: grid; min-width: 0; }
-  .mobile-more-wrap > button[aria-expanded="true"] { background: var(--gold-soft); color: var(--gold-text); }
+  .mobile-bottom-nav > a { display: grid; min-width: 0; min-height: 44px; place-items: center; border: 0; border-radius: 12px; background: transparent; color: var(--text-dim); font: 600 10px/1 theme("fontFamily.sans"); text-decoration: none; white-space: nowrap; }
+  .mobile-bottom-nav > a.active, .mobile-bottom-nav > button.active { background: var(--gold-soft); color: var(--gold-text); }
+  .mobile-bottom-nav > button { display: grid; min-width: 0; min-height: 44px; place-items: center; border: 0; border-radius: 12px; background: transparent; color: var(--text-dim); font: 600 10px/1 theme("fontFamily.sans"); white-space: nowrap; cursor: pointer; }
+  .mobile-bottom-nav > button[aria-expanded="true"] { background: var(--gold-soft); color: var(--gold-text); }
   .mobile-more-menu { position: absolute; inset-inline-end: 8px; bottom: calc(100% + 8px); display: grid; min-width: 160px; gap: 4px; padding: 8px; border: 1px solid var(--border); border-radius: 16px; background: var(--panel); box-shadow: var(--shadow); }
   .mobile-more-menu a { min-height: 44px; display: flex; align-items: center; padding: 0 12px; border-radius: 10px; color: var(--text); text-decoration: none; }
   .mobile-more-menu a:hover, .mobile-more-menu a.active { background: var(--gold-soft); color: var(--gold-text); }
@@ -11241,3 +11241,12 @@ body[data-theme="light"] .resora-tab-nav a.active { color: #fff; }
 /* Search results layout follows the product reference: one calm, readable column. */
 
 /* Search refinements: restore voice input and center the pre-query experience. */
+
+/* Credits pill (Plans & usage) and account links in the settings panel */
+.resora-credits-pill { display: inline-flex; align-items: center; gap: 5px; height: 32px; padding: 0 11px; border: 1px solid var(--border); border-radius: 999px; background: var(--panel); color: var(--text); font-size: 12.5px; font-weight: 700; font-variant-numeric: tabular-nums; text-decoration: none; }
+.resora-credits-pill svg { color: var(--gold); }
+.resora-credits-pill:hover, .resora-credits-pill:focus-visible { border-color: color-mix(in srgb, var(--gold) 45%, var(--border)); outline: none; }
+.resora-credits-pill.is-low { border-color: color-mix(in srgb, #d97706 55%, var(--border)); }
+.settings-links { display: grid; gap: 6px; }
+.settings-links a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+.settings-links a:hover { color: var(--gold); }

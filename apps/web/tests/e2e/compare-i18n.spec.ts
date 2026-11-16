@@ -138,7 +138,6 @@ async function leftoverEnglish(page: Page) {
 }
 
 test("Urdu: every Compare label comes from the catalog, in the table and every Insights tab", async ({ page }) => {
-  await page.addInitScript(() => localStorage.setItem("resora-language", "ur"));
   await mock(page);
   await page.goto("/comparison?lang=ur");
   await expect(page.getByRole("heading", { name: "اپنے مقالات کا موازنہ کریں۔" })).toBeVisible();
@@ -164,7 +163,6 @@ test("Urdu: every Compare label comes from the catalog, in the table and every I
 
 test("Urdu: table values can be shown in Urdu; the source passage stays original with its translation beside it", async ({ page }) => {
   const calls = await mock(page);
-  await page.addInitScript(() => localStorage.setItem("resora-language", "ur"));
   await page.goto("/comparison?lang=ur");
   await runComparison(page, "موازنہ کریں");
   await page.getByRole("button", { name: /اردو میں دکھائیں/ }).click();

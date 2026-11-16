@@ -1,0 +1,26 @@
+# Self-hosted natural voices for Resora "Listen" (optional).
+#
+# Kokoro-82M (Apache-2.0 weights) served by Kokoro-FastAPI (Apache-2.0) with an OpenAI-compatible
+# POST /v1/audio/speech endpoint. User text never leaves your own server.
+#
+#   docker compose -f infra/docker-compose.tts.yml up -d
+#   # then in .env:  TTS_KOKORO_URL=http://localhost:8880
+#
+# Pin KOKORO_IMAGE to a release tag for stable production use (the project recommends not running :latest);
+# see https://github.com/remsky/Kokoro-FastAPI/releases. A GPU image exists as ghcr.io/remsky/kokoro-fastapi-gpu.
+services:
+  kokoro:
+    image: ${KOKORO_IMAGE:-ghcr.io/remsky/kokoro-fastapi-cpu:latest}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8880:8880"   # only reachable from this machine; the API talks to it, browsers never do
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8880/docs', timeout=5)\" || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    deploy:
+      resources:
+        limits:
+          memory: 4g

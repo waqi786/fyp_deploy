@@ -1,0 +1,98 @@
+# Big Data stack for the Resora research pipeline (project document: Data Lake, Object Storage, Spark ETL, Kafka, Airflow).
+#   docker compose -f infra/docker-compose.yml -f infra/docker-compose.bigdata.yml up -d minio minio-init spark-master spark-worker
+#   docker compose -f infra/docker-compose.yml -f infra/docker-compose.bigdata.yml run --rm pipeline run --query "graph neural networks" --engine spark
+#   optional profiles: --profile streaming (Kafka), --profile orchestration (Airflow)
+# Credentials come from ../.env (copy .env.example); the values below are local-development defaults only.
+services:
+  minio:
+    image: minio/minio:RELEASE.2024-10-13T13-34-11Z
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-resora-local}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-resora-local-secret}
+    ports: ["9000:9000", "9001:9001"]
+    volumes: [minio_data:/data]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      retries: 5
+
+  minio-init:
+    image: minio/mc:RELEASE.2024-10-08T09-37-26Z
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "mc alias set local http://minio:9000 $${S3_ACCESS_KEY:-resora-local} $${S3_SECRET_KEY:-resora-local-secret} &&
+      mc mb --ignore-existing local/resora-lake && mc mb --ignore-existing local/resora-objects &&
+      mc version enable local/resora-lake && echo buckets ready"
+    environment:
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-resora-local}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-resora-local-secret}
+
+  spark-master:
+    image: bitnami/spark:3.5.3
+    environment:
+      SPARK_MODE: master
+    ports: ["7077:7077", "8080:8080"]
+
+  spark-worker:
+    image: bitnami/spark:3.5.3
+    depends_on: [spark-master]
+    environment:
+      SPARK_MODE: worker
+      SPARK_MASTER_URL: spark://spark-master:7077
+      SPARK_WORKER_MEMORY: 2G
+      SPARK_WORKER_CORES: "2"
+
+  pipeline:
+    build:
+      context: ../apps/pipeline
+    depends_on: [minio-init, postgres]
+    environment:
+      LAKE_URI: s3://resora-lake
+      OBJECT_STORE_URI: s3://resora-objects
+      S3_ENDPOINT_URL: http://minio:9000
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-resora-local}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-resora-local-secret}
+      CATALOG_DATABASE_URL: postgresql://resora:resora@postgres:5432/resora
+      PIPELINE_OUTPUT_DIR: /data/output
+      CONTACT_EMAIL: ${CONTACT_EMAIL:-research@example.org}
+      SEMANTIC_SCHOLAR_API_KEY: ${SEMANTIC_SCHOLAR_API_KEY:-}
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS:-}
+    volumes: [pipeline_output:/data/output]
+    profiles: ["pipeline"]
+
+  kafka:
+    image: bitnami/kafka:3.8
+    profiles: ["streaming"]
+    environment:
+      KAFKA_CFG_NODE_ID: "1"
+      KAFKA_CFG_PROCESS_ROLES: controller,broker
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
+    ports: ["9092:9092"]
+
+  airflow:
+    image: apache/airflow:2.10.2-python3.11
+    profiles: ["orchestration"]
+    command: standalone
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      _PIP_ADDITIONAL_REQUIREMENTS: "/opt/resora_pipeline[spark,s3,postgres]"
+      LAKE_URI: s3://resora-lake
+      S3_ENDPOINT_URL: http://minio:9000
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-resora-local}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-resora-local-secret}
+      CATALOG_DATABASE_URL: postgresql://resora:resora@postgres:5432/resora
+    volumes:
+      - ../apps/pipeline/dags:/opt/airflow/dags
+      - ../apps/pipeline:/opt/resora_pipeline
+    ports: ["8081:8080"]
+
+volumes:
+  minio_data:
+  pipeline_output:

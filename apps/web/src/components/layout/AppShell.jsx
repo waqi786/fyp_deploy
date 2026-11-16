@@ -6,50 +6,51 @@ import { ResoraLogo } from "../common/ResoraLogo";
 
 
 import { researchLanguages } from "../../i18n/languages";
-import { hasSearchCatalog } from "../../pages/search/copy";
+import { hasSearchCatalog, useSearchCopy } from "../../pages/search/copy";
+import { CreditsPill } from "../../pages/platform/CreditsPill";
 
 /* Main tab labels, written by hand for every interface language (machine catalogs mistranslate single words
    such as "Home" or "Gaps"). The tabs are marked data-no-translate so the app-wide translator leaves them alone. */
-const TAB_KEYS = ["home", "search", "library", "reader", "compare", "gaps", "write"];
+const TAB_KEYS = ["home", "search", "library", "reader", "compare", "gaps", "write", "teams", "studio"];
 const TAB_LABELS = {
-  en: ["Home", "Search", "Library", "Reader", "Compare", "Gaps", "Write"],
-  ur: ["ہوم", "تلاش", "لائبریری", "ریڈر", "موازنہ", "خلا", "تحریر"],
-  ar: ["الرئيسية", "بحث", "المكتبة", "القارئ", "مقارنة", "الفجوات", "الكتابة"],
-  fa: ["خانه", "جستجو", "کتابخانه", "خواننده", "مقایسه", "شکاف‌ها", "نوشتن"],
-  hi: ["होम", "खोज", "लाइब्रेरी", "रीडर", "तुलना", "अंतराल", "लेखन"],
-  bn: ["হোম", "অনুসন্ধান", "লাইব্রেরি", "রিডার", "তুলনা", "ঘাটতি", "লেখা"],
-  "pa-Arab": ["ہوم", "تلاش", "لائبریری", "ریڈر", "مقابلہ", "خلا", "لکھائی"],
-  tr: ["Ana sayfa", "Ara", "Kütüphane", "Okuyucu", "Karşılaştır", "Boşluklar", "Yaz"],
-  id: ["Beranda", "Cari", "Pustaka", "Pembaca", "Bandingkan", "Celah", "Tulis"],
-  ms: ["Utama", "Cari", "Pustaka", "Pembaca", "Banding", "Jurang", "Tulis"],
-  "zh-Hans": ["首页", "搜索", "文库", "阅读器", "比较", "研究空白", "写作"],
-  "zh-Hant": ["首頁", "搜尋", "文庫", "閱讀器", "比較", "研究空白", "寫作"],
-  ja: ["ホーム", "検索", "ライブラリ", "リーダー", "比較", "研究ギャップ", "執筆"],
-  ko: ["홈", "검색", "라이브러리", "리더", "비교", "연구 공백", "글쓰기"],
-  vi: ["Trang chủ", "Tìm kiếm", "Thư viện", "Trình đọc", "So sánh", "Khoảng trống", "Viết"],
-  th: ["หน้าแรก", "ค้นหา", "คลัง", "อ่าน", "เปรียบเทียบ", "ช่องว่าง", "เขียน"],
-  es: ["Inicio", "Buscar", "Biblioteca", "Lector", "Comparar", "Vacíos", "Escribir"],
-  "pt-BR": ["Início", "Buscar", "Biblioteca", "Leitor", "Comparar", "Lacunas", "Escrever"],
-  "pt-PT": ["Início", "Pesquisar", "Biblioteca", "Leitor", "Comparar", "Lacunas", "Escrever"],
-  fr: ["Accueil", "Rechercher", "Bibliothèque", "Lecteur", "Comparer", "Lacunes", "Rédiger"],
-  de: ["Start", "Suche", "Bibliothek", "Lesen", "Vergleichen", "Lücken", "Schreiben"],
-  it: ["Home", "Cerca", "Libreria", "Lettore", "Confronta", "Lacune", "Scrivi"],
-  nl: ["Home", "Zoeken", "Bibliotheek", "Lezer", "Vergelijken", "Hiaten", "Schrijven"],
-  pl: ["Start", "Szukaj", "Biblioteka", "Czytnik", "Porównaj", "Luki", "Pisz"],
-  ru: ["Главная", "Поиск", "Библиотека", "Чтение", "Сравнить", "Пробелы", "Письмо"],
-  uk: ["Головна", "Пошук", "Бібліотека", "Читання", "Порівняти", "Прогалини", "Письмо"],
-  sv: ["Hem", "Sök", "Bibliotek", "Läsare", "Jämför", "Luckor", "Skriv"],
-  el: ["Αρχική", "Αναζήτηση", "Βιβλιοθήκη", "Ανάγνωση", "Σύγκριση", "Κενά", "Γραφή"],
-  ro: ["Acasă", "Căutare", "Bibliotecă", "Cititor", "Compară", "Lacune", "Scrie"],
-  cs: ["Domů", "Hledat", "Knihovna", "Čtečka", "Porovnat", "Mezery", "Psaní"],
-  hu: ["Kezdőlap", "Keresés", "Könyvtár", "Olvasó", "Összevetés", "Hiányok", "Írás"],
-  he: ["בית", "חיפוש", "ספרייה", "קורא", "השוואה", "פערים", "כתיבה"],
-  sw: ["Nyumbani", "Tafuta", "Maktaba", "Msomaji", "Linganisha", "Mapengo", "Andika"],
-  ta: ["முகப்பு", "தேடல்", "நூலகம்", "வாசிப்பு", "ஒப்பீடு", "இடைவெளிகள்", "எழுது"],
-  ps: ["کور", "لټون", "کتابتون", "لوستونکی", "پرتله", "تشې", "لیکل"],
-  sd: ["گهر", "ڳولا", "لائبريري", "پڙهندڙ", "ڀيٽ", "خال", "لکڻ"],
+  en: ["Home", "Search", "Library", "Reader", "Compare", "Gaps", "Write", "Teams", "Studio"],
+  ur: ["ہوم", "تلاش", "لائبریری", "ریڈر", "موازنہ", "خلا", "تحریر", "ٹیمیں", "اسٹوڈیو"],
+  ar: ["الرئيسية", "بحث", "المكتبة", "القارئ", "مقارنة", "الفجوات", "الكتابة", "الفرق", "الاستوديو"],
+  fa: ["خانه", "جستجو", "کتابخانه", "خواننده", "مقایسه", "شکاف‌ها", "نوشتن", "تیم‌ها", "استودیو"],
+  hi: ["होम", "खोज", "लाइब्रेरी", "रीडर", "तुलना", "अंतराल", "लेखन", "टीमें", "स्टूडियो"],
+  bn: ["হোম", "অনুসন্ধান", "লাইব্রেরি", "রিডার", "তুলনা", "ঘাটতি", "লেখা", "দল", "স্টুডিও"],
+  "pa-Arab": ["ہوم", "تلاش", "لائبریری", "ریڈر", "مقابلہ", "خلا", "لکھائی", "ٹیماں", "سٹوڈیو"],
+  tr: ["Ana sayfa", "Ara", "Kütüphane", "Okuyucu", "Karşılaştır", "Boşluklar", "Yaz", "Ekipler", "Stüdyo"],
+  id: ["Beranda", "Cari", "Pustaka", "Pembaca", "Bandingkan", "Celah", "Tulis", "Tim", "Studio"],
+  ms: ["Utama", "Cari", "Pustaka", "Pembaca", "Banding", "Jurang", "Tulis", "Pasukan", "Studio"],
+  "zh-Hans": ["首页", "搜索", "文库", "阅读器", "比较", "研究空白", "写作", "团队", "工作室"],
+  "zh-Hant": ["首頁", "搜尋", "文庫", "閱讀器", "比較", "研究空白", "寫作", "團隊", "工作室"],
+  ja: ["ホーム", "検索", "ライブラリ", "リーダー", "比較", "研究ギャップ", "執筆", "チーム", "スタジオ"],
+  ko: ["홈", "검색", "라이브러리", "리더", "비교", "연구 공백", "글쓰기", "팀", "스튜디오"],
+  vi: ["Trang chủ", "Tìm kiếm", "Thư viện", "Trình đọc", "So sánh", "Khoảng trống", "Viết", "Nhóm", "Studio"],
+  th: ["หน้าแรก", "ค้นหา", "คลัง", "อ่าน", "เปรียบเทียบ", "ช่องว่าง", "เขียน", "ทีม", "สตูดิโอ"],
+  es: ["Inicio", "Buscar", "Biblioteca", "Lector", "Comparar", "Vacíos", "Escribir", "Equipos", "Estudio"],
+  "pt-BR": ["Início", "Buscar", "Biblioteca", "Leitor", "Comparar", "Lacunas", "Escrever", "Equipes", "Estúdio"],
+  "pt-PT": ["Início", "Pesquisar", "Biblioteca", "Leitor", "Comparar", "Lacunas", "Escrever", "Equipas", "Estúdio"],
+  fr: ["Accueil", "Rechercher", "Bibliothèque", "Lecteur", "Comparer", "Lacunes", "Rédiger", "Équipes", "Studio"],
+  de: ["Start", "Suche", "Bibliothek", "Lesen", "Vergleichen", "Lücken", "Schreiben", "Teams", "Studio"],
+  it: ["Home", "Cerca", "Libreria", "Lettore", "Confronta", "Lacune", "Scrivi", "Team", "Studio"],
+  nl: ["Home", "Zoeken", "Bibliotheek", "Lezer", "Vergelijken", "Hiaten", "Schrijven", "Teams", "Studio"],
+  pl: ["Start", "Szukaj", "Biblioteka", "Czytnik", "Porównaj", "Luki", "Pisz", "Zespoły", "Studio"],
+  ru: ["Главная", "Поиск", "Библиотека", "Чтение", "Сравнить", "Пробелы", "Письмо", "Команды", "Студия"],
+  uk: ["Головна", "Пошук", "Бібліотека", "Читання", "Порівняти", "Прогалини", "Письмо", "Команди", "Студія"],
+  sv: ["Hem", "Sök", "Bibliotek", "Läsare", "Jämför", "Luckor", "Skriv", "Team", "Studio"],
+  el: ["Αρχική", "Αναζήτηση", "Βιβλιοθήκη", "Ανάγνωση", "Σύγκριση", "Κενά", "Γραφή", "Ομάδες", "Στούντιο"],
+  ro: ["Acasă", "Căutare", "Bibliotecă", "Cititor", "Compară", "Lacune", "Scrie", "Echipe", "Studio"],
+  cs: ["Domů", "Hledat", "Knihovna", "Čtečka", "Porovnat", "Mezery", "Psaní", "Týmy", "Studio"],
+  hu: ["Kezdőlap", "Keresés", "Könyvtár", "Olvasó", "Összevetés", "Hiányok", "Írás", "Csapatok", "Stúdió"],
+  he: ["בית", "חיפוש", "ספרייה", "קורא", "השוואה", "פערים", "כתיבה", "צוותים", "סטודיו"],
+  sw: ["Nyumbani", "Tafuta", "Maktaba", "Msomaji", "Linganisha", "Mapengo", "Andika", "Timu", "Studio"],
+  ta: ["முகப்பு", "தேடல்", "நூலகம்", "வாசிப்பு", "ஒப்பீடு", "இடைவெளிகள்", "எழுது", "குழுக்கள்", "ஸ்டுடியோ"],
+  ps: ["کور", "لټون", "کتابتون", "لوستونکی", "پرتله", "تشې", "لیکل", "ټیمونه", "سټوډیو"],
+  sd: ["گهر", "ڳولا", "لائبريري", "پڙهندڙ", "ڀيٽ", "خال", "لکڻ", "ٽيمون", "اسٽوڊيو"],
 };
-const TAB_ROUTES = ["/", "/search", "/library", "/reader", "/comparison", "/gaps", "/writing"];
+const TAB_ROUTES = ["/", "/search", "/library", "/reader", "/comparison", "/gaps", "/writing", "/teams", "/studio"];
 
 function tabsFor(language) {
   const labels = TAB_LABELS[language] || TAB_LABELS.en;
@@ -636,6 +637,7 @@ function navLinkClass({ isActive }) {
 }
 
 export function AppShell({ children, theme, onThemeChange, language, onLanguageChange, density, onDensityChange, direction }) {
+  const copy = useSearchCopy(language);
   const location = useLocation();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
@@ -660,9 +662,6 @@ export function AppShell({ children, theme, onThemeChange, language, onLanguageC
     { label: dictionary.ui.language, value: `${selectedLanguageName} (${dictionary.ui[direction] || direction.toUpperCase()})` },
     { label: dictionary.ui.theme, value: dictionary.themes[theme] || theme },
   ];
-  const mobileTabs = tabsFor(language);
-  const primaryMobileTabs = mobileTabs.slice(0, 4);
-  const overflowMobileItems = mobileTabs.slice(4);
   const primaryMobileItems = navigationItems;
 
   useEffect(() => {
@@ -750,29 +749,25 @@ export function AppShell({ children, theme, onThemeChange, language, onLanguageC
               <span className={theme === "dark" ? "active" : ""} aria-hidden="true">☼</span>
               <span className={theme === "light" ? "active" : ""} aria-hidden="true">☾</span>
             </button>
+            <CreditsPill language={language} />
             <button type="button" className="resora-avatar" onClick={() => setSettingsOpen(true)} aria-label="Open profile and settings">WA</button>
           </div>
         </header>
         <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
-          {primaryMobileTabs.map((item) => (
+          {/* Master prompt: Home, Search, Library, Reader, More → Compare, Gaps, Write. */}
+          {tabsFor(language).slice(0, 4).map((item) => (
             <NavLink key={item.to} to={item.to} end={item.to === "/"} data-no-translate="" lang={language}>
               {item.label}
             </NavLink>
           ))}
-          <div className="mobile-more-wrap">
-            <button ref={moreTriggerRef} type="button" aria-label="More" aria-haspopup="menu" aria-expanded={moreOpen} onClick={() => setMoreOpen((open) => !open)}>
-              {language === "ur" ? "مزید" : "More"}
-            </button>
-            {moreOpen ? (
-              <div ref={moreMenuRef} className="mobile-more-menu" role="menu" aria-label="More navigation">
-                {overflowMobileItems.map((item) => (
-                  <NavLink key={item.to} to={item.to} end={item.to === "/"} role="menuitem" data-no-translate="" lang={language} onClick={() => setMoreOpen(false)}>
-                    {item.label}
-                  </NavLink>
-                ))}
-              </div>
-            ) : null}
-          </div>
+          <button ref={moreTriggerRef} type="button" className={tabsFor(language).slice(4).some((item) => location.pathname.startsWith(item.to)) ? "active" : ""} aria-expanded={moreOpen} aria-haspopup="menu" aria-controls="mobile-more-menu" onClick={() => setMoreOpen((open) => !open)} data-no-translate="" lang={language}>{copy("navMore")}</button>
+          {moreOpen ? (
+            <div ref={moreMenuRef} id="mobile-more-menu" className="mobile-more-menu" role="menu" aria-label={copy("navMoreMenu")} data-no-translate="" lang={language}>
+              {tabsFor(language).slice(4).map((item) => (
+                <NavLink key={item.to} to={item.to} role="menuitem" onClick={() => setMoreOpen(false)}>{item.label}</NavLink>
+              ))}
+            </div>
+          ) : null}
         </nav>
         <aside className="app-sidebar hidden" aria-hidden="true">
           <div className="sidebar-body flex min-h-0 w-full flex-1 flex-col gap-4 overflow-hidden px-3 pb-3 pt-4">
@@ -984,10 +979,16 @@ export function AppShell({ children, theme, onThemeChange, language, onLanguageC
             <div className="settings-section">
               <p className="resora-label">{dictionary.ui.account || "Account"}</p>
               <input className="resora-input mt-3 w-full" placeholder={dictionary.ui.profileName || "Research profile"} defaultValue={dictionary.ui.userName || "Waqar Ali"} />
-              <div className="settings-list">
-                <span>Plan: Research Pro</span>
-                <span>Workspace: Final Year Project</span>
-              </div>
+              <nav className="settings-list settings-links" aria-label={copy("navAccountLinks")} data-no-translate="" lang={language}>
+                <NavLink to="/usage" onClick={() => setSettingsOpen(false)}>{copy("navPlansUsage")}</NavLink>
+                <NavLink to="/pricing" onClick={() => setSettingsOpen(false)}>{copy("navPricing")}</NavLink>
+                <NavLink to="/teams" onClick={() => setSettingsOpen(false)}>{copy("navTeams")}</NavLink>
+                <NavLink to="/insights" onClick={() => setSettingsOpen(false)}>{copy("navInsights")}</NavLink>
+                <NavLink to="/invite" onClick={() => setSettingsOpen(false)}>{copy("refNav")}</NavLink>
+                <NavLink to="/help" onClick={() => setSettingsOpen(false)}>{copy("siteNavHelp")}</NavLink>
+                <NavLink to="/status" onClick={() => setSettingsOpen(false)}>{copy("siteNavStatus")}</NavLink>
+                <NavLink to="/welcome" onClick={() => setSettingsOpen(false)}>{copy("siteNavAboutResora")}</NavLink>
+              </nav>
             </div>
 
             <div className="settings-section">

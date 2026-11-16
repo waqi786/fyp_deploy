@@ -5,6 +5,9 @@ import { PopoverProvider } from "./components/ui";
 import { AutoTranslator } from "./i18n/StaticCatalogTranslator";
 import { getResearchLanguage, researchLanguages } from "./i18n/languages";
 import { hasSearchCatalog } from "./pages/search/copy";
+import { ListenProvider } from "./listen/ListenProvider";
+import { MiniPlayer } from "./listen/MiniPlayer";
+import { CookieNotice, PageviewTracker } from "./pages/site/siteRuntime";
 
 const HomePage = lazy(() => import("./pages/HomePage").then((module) => ({ default: module.HomePage })));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage").then((module) => ({ default: module.NotFoundPage })));
@@ -17,7 +20,24 @@ const GapsPage = lazy(() => import("./pages/GapsPage").then((module) => ({ defau
 const WritePage = lazy(() => import("./pages/WritePage").then((module) => ({ default: module.WritePage })));
 const ChatPage = lazy(() => import("./pages/ChatPage").then((module) => ({ default: module.ChatPage })));
 const LibraryPage = lazy(() => import("./pages/LibraryPage").then((module) => ({ default: module.LibraryPage })));
-const WritingLibraryPage = lazy(() => import("./pages/WritingLibraryPage").then((module) => ({ default: module.WritingLibraryPage })));
+const PricingPage = lazy(() => import("./pages/BillingPages").then((module) => ({ default: module.PricingPage })));
+const UsagePage = lazy(() => import("./pages/BillingPages").then((module) => ({ default: module.UsagePage })));
+const CheckoutPage = lazy(() => import("./pages/BillingPages").then((module) => ({ default: module.CheckoutPage })));
+const TeamsPage = lazy(() => import("./pages/TeamsPage").then((module) => ({ default: module.TeamsPage })));
+const JoinTeamPage = lazy(() => import("./pages/TeamsPage").then((module) => ({ default: module.JoinTeamPage })));
+const StudioPage = lazy(() => import("./pages/StudioPage").then((module) => ({ default: module.StudioPage })));
+const AdminPage = lazy(() => import("./pages/AdminPage").then((module) => ({ default: module.AdminPage })));
+const LandingPage = lazy(() => import("./pages/SitePages").then((module) => ({ default: module.LandingPage })));
+const FeaturesPage = lazy(() => import("./pages/SitePages").then((module) => ({ default: module.FeaturesPage })));
+const AboutPage = lazy(() => import("./pages/SitePages").then((module) => ({ default: module.AboutPage })));
+const HelpPage = lazy(() => import("./pages/SitePages").then((module) => ({ default: module.HelpPage })));
+const ContactPage = lazy(() => import("./pages/SitePages").then((module) => ({ default: module.ContactPage })));
+const StatusPage = lazy(() => import("./pages/SitePages").then((module) => ({ default: module.StatusPage })));
+const ChangelogPage = lazy(() => import("./pages/SitePages").then((module) => ({ default: module.ChangelogPage })));
+const LegalPage = lazy(() => import("./pages/SitePages").then((module) => ({ default: module.LegalPage })));
+const NewsletterConfirmPage = lazy(() => import("./pages/SitePages").then((module) => ({ default: module.NewsletterConfirmPage })));
+const InvitePage = lazy(() => import("./pages/SitePages").then((module) => ({ default: module.InvitePage })));
+const InsightsPage = lazy(() => import("./pages/InsightsPage").then((module) => ({ default: module.InsightsPage })));
 const CollaborationPage = lazy(() => import("./pages/CollaborationPage").then((module) => ({ default: module.CollaborationPage })));
 const PersonalizationPage = lazy(() => import("./pages/PersonalizationPage").then((module) => ({ default: module.PersonalizationPage })));
 const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage").then((module) => ({ default: module.AnalyticsPage })));
@@ -53,6 +73,18 @@ function resolveInitialTheme(): ThemeMode {
 function resolveInitialLanguage(): LanguageCode {
   if (typeof window === "undefined") {
     return "en";
+  }
+
+  // A shared link can carry the language (?lang=ur). It is pinned like a choice made in Settings.
+  const fromLink = new URLSearchParams(window.location.search).get("lang");
+  const linked = fromLink ? languageCodes.find((code) => code.toLowerCase() === fromLink.toLowerCase()) : undefined;
+  if (linked) {
+    try {
+      window.localStorage.setItem("resora-language-source", "settings");
+    } catch {
+      /* storage unavailable: the link still applies for this visit */
+    }
+    return linked;
   }
 
   let savedLanguage: string | null = null;
@@ -103,6 +135,13 @@ function LegacyReaderRedirect() {
   return <Navigate to={`/reader${location.search}`} replace />;
 }
 
+/** The cookie notice is shown on the public website pages (Resora sets no tracking cookies anywhere). */
+const PUBLIC_PATHS = /^\/(welcome|features|about|help|contact|status|changelog|legal|invite)(\/|$)/;
+function PublicCookieNotice({ language }: { language: string }) {
+  const location = useLocation();
+  return PUBLIC_PATHS.test(location.pathname) ? <CookieNotice language={language} /> : null;
+}
+
 function ScrollToTop() {
   const location = useLocation();
 
@@ -143,6 +182,8 @@ export function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <PageviewTracker language={language} />
+      <ListenProvider language={language}>
       <AutoTranslator language={language}>
         <PopoverProvider>
         <AppShell
@@ -171,6 +212,25 @@ export function App() {
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/writing/*" element={<WritePage interfaceLanguage={language} />} />
             <Route path="/library/*" element={<LibraryPage interfaceLanguage={language} />} />
+            <Route path="/pricing" element={<PricingPage interfaceLanguage={language} />} />
+            <Route path="/usage" element={<UsagePage interfaceLanguage={language} />} />
+            <Route path="/billing/checkout/:sessionId" element={<CheckoutPage interfaceLanguage={language} />} />
+            <Route path="/teams/*" element={<TeamsPage interfaceLanguage={language} />} />
+            <Route path="/join/:token" element={<JoinTeamPage interfaceLanguage={language} />} />
+            <Route path="/insights" element={<InsightsPage interfaceLanguage={language} />} />
+            <Route path="/admin/*" element={<AdminPage interfaceLanguage={language} />} />
+            <Route path="/studio/*" element={<StudioPage interfaceLanguage={language} />} />
+            <Route path="/welcome" element={<LandingPage interfaceLanguage={language} />} />
+            <Route path="/features" element={<FeaturesPage interfaceLanguage={language} />} />
+            <Route path="/about" element={<AboutPage interfaceLanguage={language} />} />
+            <Route path="/help" element={<HelpPage interfaceLanguage={language} />} />
+            <Route path="/contact" element={<ContactPage interfaceLanguage={language} />} />
+            <Route path="/status" element={<StatusPage interfaceLanguage={language} />} />
+            <Route path="/changelog" element={<ChangelogPage interfaceLanguage={language} />} />
+            <Route path="/legal/:doc" element={<LegalPage interfaceLanguage={language} />} />
+            <Route path="/newsletter/confirm" element={<NewsletterConfirmPage interfaceLanguage={language} action="confirm" />} />
+            <Route path="/newsletter/unsubscribe" element={<NewsletterConfirmPage interfaceLanguage={language} action="unsubscribe" />} />
+            <Route path="/invite" element={<InvitePage interfaceLanguage={language} />} />
             <Route path="/collaboration" element={<CollaborationPage />} />
             <Route path="/personalization" element={<PersonalizationPage interfaceLanguage={language} />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
@@ -184,8 +244,11 @@ export function App() {
           </Routes>
           </Suspense>
         </AppShell>
+        <MiniPlayer language={language} />
+        <PublicCookieNotice language={language} />
         </PopoverProvider>
       </AutoTranslator>
+      </ListenProvider>
     </BrowserRouter>
   );
 }

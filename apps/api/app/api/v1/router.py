@@ -1,38 +1,23 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, HTTPException
+from starlette.requests import HTTPConnection
+
+from app.api.deps import AuthContext, get_auth_context
+from app.services.admin.service import is_suspended
 
 from app.api.v1.endpoints import advanced_ai as _advanced_ai
-from app.api.v1.endpoints import (
-    agents,
-    analytics,
-    chat,
-    collaboration,
-    comparison,
-    developer,
-    documents,
-    drafts,
-    evaluation,
-    exports,
-    gap,
-    graph,
-    health,
-    library,
-    mobile,
-    personalization,
-    quality,
-    reader,
-    roadmap,
-    search,
-    security,
-    summaries,
-    trust,
-    verification,
-    workspaces,
-    write,
-    writing,
-    ws,
-)
+from app.api.v1.endpoints import admin, agents, analytics, billing, catalog, chat, collaboration, comparison, developer, documents, drafts, evaluation, exports, gap, graph, growth, health, library, listen, mobile, studio, personalization, quality, reader, roadmap, search, security, summaries, teams, trust, verification, workspaces, write, writing, ws
 
-api_router = APIRouter()
+
+async def block_suspended(request: HTTPConnection, auth: AuthContext = Depends(get_auth_context)) -> None:
+    """A suspended account cannot use the product (health and the public status page stay reachable)."""
+    path = request.url.path
+    if path.endswith(("/health", "/site/status")) or "/admin/" in path:
+        return
+    if auth.user_id and auth.user_id != "anonymous" and is_suspended(auth.user_id):
+        raise HTTPException(status_code=403, detail={"code": "account_suspended"})
+
+
+api_router = APIRouter(dependencies=[Depends(block_suspended)])
 api_router.include_router(health.router, prefix="/health", tags=["health"])
 api_router.include_router(search.router, prefix="/search", tags=["search"])
 api_router.include_router(reader.router, prefix="/reader", tags=["reader"])
@@ -62,3 +47,10 @@ api_router.include_router(summaries.router, prefix="/summaries", tags=["summarie
 api_router.include_router(graph.router, prefix="/graph", tags=["graph"])
 api_router.include_router(workspaces.router, prefix="/workspaces", tags=["workspaces"])
 api_router.include_router(ws.router, prefix="/ws", tags=["websockets"])
+api_router.include_router(catalog.router, prefix="/catalog", tags=["catalog"])
+api_router.include_router(billing.router, prefix="/billing", tags=["billing"])
+api_router.include_router(teams.router, prefix="/teams", tags=["teams"])
+api_router.include_router(listen.router, prefix="/listen", tags=["listen"])
+api_router.include_router(admin.router, prefix="/admin", tags=["admin"])
+api_router.include_router(growth.router, prefix="/site", tags=["site"])
+api_router.include_router(studio.router, prefix="/studio", tags=["studio"])
