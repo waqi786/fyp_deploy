@@ -340,12 +340,20 @@ function Editor({ t, language, toast }: { t: SearchT; language: string; toast: (
   function jumpTo(line: number) {
     const area = textRef.current;
     if (!area) return;
-    const lines = content.split("\n");
+    const lines = area.value.split("\n");
     const offset = lines.slice(0, Math.max(0, line - 1)).reduce((sum, value) => sum + value.length + 1, 0);
     area.focus();
-    area.selectionStart = offset;
-    area.selectionEnd = offset + (lines[line - 1]?.length || 0);
+    area.setSelectionRange(offset, offset + (lines[line - 1]?.length || 0));
     area.scrollTop = Math.max(0, (line - 5) * 20);
+  }
+
+  function jumpToError(file: string, line: number) {
+    const selectLine = () => window.requestAnimationFrame(() => jumpTo(line));
+    if (file && file !== path) {
+      void openFile(file).then(selectLine);
+    } else {
+      selectLine();
+    }
   }
 
   async function upload(files: FileList | null) {
@@ -519,7 +527,7 @@ function Editor({ t, language, toast }: { t: SearchT; language: string; toast: (
                   <b>{compileResult.ok ? t("stuCompiled", { pages: formatNumber(compileResult.pages || 0, language), seconds: formatNumber(compileResult.seconds, language) }) : t("stuCompileFailed", { count: formatNumber(compileResult.errors.length, language) })}</b>
                   {compileResult.exact_class === false ? <p className="gw-small">{t("stuPreviewLayout")}</p> : null}
                   {compileResult.errors.length ? (
-                    <ul className="stu-errors">{compileResult.errors.map((item, index) => <li key={index}><button type="button" onClick={() => { if (item.file && item.file !== path) void openFile(item.file); if (item.line) window.setTimeout(() => jumpTo(item.line!), 50); }}>{item.line ? t("stuLine", { line: formatNumber(item.line, language) }) : ""} <span dir="ltr">{item.message}</span></button></li>)}</ul>
+                    <ul className="stu-errors">{compileResult.errors.map((item, index) => <li key={index}><button type="button" onClick={() => { if (item.line) jumpToError(item.file, item.line); }}>{item.line ? t("stuLine", { line: formatNumber(item.line, language) }) : ""} <span dir="ltr">{item.message}</span></button></li>)}</ul>
                   ) : null}
                   {compileResult.warnings.length ? <details><summary>{t("stuWarnings", { count: formatNumber(compileResult.warnings.length, language) })}</summary><ul className="stu-warnings">{compileResult.warnings.map((item, index) => <li key={index} dir="ltr">{item.message}</li>)}</ul></details> : null}
                 </div>
