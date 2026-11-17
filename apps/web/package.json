@@ -20,6 +20,7 @@
     "lint:report": "eslint src"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.119.0",
     "cytoscape": "^3.30.2",
     "framer-motion": "^12.23.12",
     "pdfjs-dist": "5.4.624",

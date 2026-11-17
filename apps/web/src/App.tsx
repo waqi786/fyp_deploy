@@ -11,6 +11,7 @@ import { CookieNotice, PageviewTracker } from "./pages/site/siteRuntime";
 
 const HomePage = lazy(() => import("./pages/HomePage").then((module) => ({ default: module.HomePage })));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage").then((module) => ({ default: module.NotFoundPage })));
+const AuthPage = lazy(() => import("./pages/AuthPage"));
 const SearchPage = lazy(() => import("./pages/SearchPage").then((module) => ({ default: module.SearchPage })));
 const EntityProfilePage = lazy(() => import("./pages/EntityProfilePage").then((module) => ({ default: module.EntityProfilePage })));
 const ReaderPage = lazy(() => import("./pages/ReaderPage").then((module) => ({ default: module.ReaderPage })));
@@ -198,6 +199,7 @@ export function App() {
           <Suspense fallback={<div className="flex min-h-[50vh] items-center justify-center text-sm text-muted" role="status">Loading Resora</div>}>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/auth" element={<AuthPage interfaceLanguage={language} />} />
             <Route path="/dashboard" element={<Navigate to="/control" replace />} />
             <Route path="/workspace" element={<Navigate to="/control" replace />} />
             <Route path="/search" element={<SearchPage interfaceLanguage={language} onLanguageChange={handleLanguageChange} />} />

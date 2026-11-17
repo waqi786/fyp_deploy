@@ -980,6 +980,7 @@ export function AppShell({ children, theme, onThemeChange, language, onLanguageC
               <p className="resora-label">{dictionary.ui.account || "Account"}</p>
               <input className="resora-input mt-3 w-full" placeholder={dictionary.ui.profileName || "Research profile"} defaultValue={dictionary.ui.userName || "Waqar Ali"} />
               <nav className="settings-list settings-links" aria-label={copy("navAccountLinks")} data-no-translate="" lang={language}>
+                <NavLink to="/auth" onClick={() => setSettingsOpen(false)}>{copy("navAccountLinks")}</NavLink>
                 <NavLink to="/usage" onClick={() => setSettingsOpen(false)}>{copy("navPlansUsage")}</NavLink>
                 <NavLink to="/pricing" onClick={() => setSettingsOpen(false)}>{copy("navPricing")}</NavLink>
                 <NavLink to="/teams" onClick={() => setSettingsOpen(false)}>{copy("navTeams")}</NavLink>

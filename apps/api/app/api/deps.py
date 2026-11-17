@@ -7,6 +7,7 @@ import json
 from dataclasses import dataclass
 from typing import Annotated
 
+import httpx
 from fastapi import Header
 
 from app.core.config import settings
@@ -54,11 +55,27 @@ async def get_auth_context(
     authorization: Annotated[str | None, Header()] = None,
     x_resora_user: Annotated[str | None, Header()] = None,
 ) -> AuthContext:
-    if x_resora_user:
-        return AuthContext(user_id=x_resora_user.strip(), source="x-resora-user", verified=False)
-
     if authorization and authorization.lower().startswith("bearer "):
         token = authorization.split(" ", 1)[1].strip()
+        if settings.supabase_url and settings.supabase_anon_key:
+            try:
+                async with httpx.AsyncClient(timeout=5.0) as client:
+                    response = await client.get(
+                        f"{settings.supabase_url.rstrip('/')}/auth/v1/user",
+                        headers={
+                            "apikey": settings.supabase_anon_key,
+                            "Authorization": f"Bearer {token}",
+                        },
+                    )
+                if response.status_code == 200:
+                    profile = response.json()
+                    subject = str(profile.get("id") or "").strip() if isinstance(profile, dict) else ""
+                    if subject:
+                        return AuthContext(user_id=subject, source="supabase-auth", verified=True)
+            except (httpx.HTTPError, ValueError):
+                pass
+            return AuthContext(user_id="anonymous", source="invalid-supabase-token", verified=False)
+
         if settings.supabase_jwt_secret and not _verify_hs256(token, settings.supabase_jwt_secret):
             return AuthContext(user_id="anonymous", source="invalid-jwt", verified=False)
         payload = _decode_jwt_payload(token)
@@ -69,5 +86,8 @@ async def get_auth_context(
                 source="supabase-jwt",
                 verified=bool(settings.supabase_jwt_secret),
             )
+
+    if x_resora_user:
+        return AuthContext(user_id=x_resora_user.strip(), source="x-resora-user", verified=False)
 
     return AuthContext(user_id="anonymous", source="anonymous", verified=False)

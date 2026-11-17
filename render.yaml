@@ -16,6 +16,10 @@ services:
         fromDatabase:
           name: resora-demo-db
           property: connectionString
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
       - key: CORS_ALLOWED_ORIGINS
         value: https://resora-fyp-team-demo.vercel.app
       - key: AI_ROUTER_FREE_MODELS_ONLY
