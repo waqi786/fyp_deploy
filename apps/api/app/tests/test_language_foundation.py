@@ -44,6 +44,7 @@ def test_unavailable_translation_retries_once_in_background(monkeypatch):
 
     monkeypatch.setattr(translation, "_RETRY_EXECUTOR", ImmediateExecutor())
     monkeypatch.setattr(translation.time, "sleep", lambda _seconds: None)
+    monkeypatch.setattr(translation.time, "monotonic", lambda: 1.0)
     def translate(*args, **_kwargs):
         calls.append(args)
         return "translated title", "translated abstract"
@@ -154,6 +155,7 @@ def test_redis_translation_retry_queue_persists_owner_status(monkeypatch):
     monkeypatch.setattr(translation, "_redis", lambda: client)
     monkeypatch.setattr(translation, "_RETRY_EXECUTOR", ImmediateExecutor())
     monkeypatch.setattr(translation.time, "sleep", lambda _seconds: None)
+    monkeypatch.setattr(translation.time, "monotonic", lambda: 1.0)
     monkeypatch.setattr(translation, "translate_paper_text", lambda *_args, **_kwargs: ("ترجمہ", "خلاصہ"))
     monkeypatch.setenv("TRANSLATION_BACKGROUND_RETRY_SECONDS", "0")
     job_id = translation.schedule_translation_retry("durable retry title 2026", "Abstract", "ur", user_id="durable-user", paper_id="paper-durable")

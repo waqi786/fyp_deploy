@@ -1212,7 +1212,8 @@ def schedule_translation_retry(title: str, abstract: str | None, target_language
     client = _redis()
     job_id = uuid.uuid4().hex
     with _RETRY_LOCK:
-        if identity in _RETRY_PENDING or now - _RETRY_LAST_SCHEDULED.get(identity, 0.0) < 60.0 or len(_RETRY_PENDING) >= 128:
+        last_scheduled = _RETRY_LAST_SCHEDULED.get(identity)
+        if identity in _RETRY_PENDING or (last_scheduled is not None and now - last_scheduled < 60.0) or len(_RETRY_PENDING) >= 128:
             return _RETRY_DEDUPE_LOCAL.get(identity)
         if client is not None:
             try:
